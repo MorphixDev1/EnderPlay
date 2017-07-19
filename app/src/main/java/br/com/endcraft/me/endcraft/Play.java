@@ -42,6 +42,8 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import br.com.endcraft.me.endcraft.Managers.DataMovie;
+
 /**
  * Created by JonasXPX on 18.jul.2017.
  */
@@ -53,6 +55,8 @@ public class Play extends AppCompatActivity {
     private final static String TAG = "PLAYER";
     private LoopingMediaSource loopingSource;
     private Play instance;
+    private long seek;
+    private String movie;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,7 +84,10 @@ public class Play extends AppCompatActivity {
 
         simpleExoPlayerView.setPlayer(player);
 
+        seek = getIntent().getLongExtra("seek", 0);
+        movie = getIntent().getStringExtra("movie");
 
+        Log.d("LOG","\n\n\n\n\n\n\n\n\n\n\n\n\n"+seek + " --- " + movie);
         play(Filmes.url_final);
 
     }
@@ -98,11 +105,12 @@ public class Play extends AppCompatActivity {
             }
             loopingSource = new LoopingMediaSource(videoSource);
             player.prepare(loopingSource);
+            player.seekTo(seek);
             player.addListener(new ExoPlayer.EventListener() {
                 @Override
                 public void onTimelineChanged(Timeline timeline, Object manifest) {
-                    Log.v(TAG,"Listener-onTimelineChanged...");
-
+                    Log.v(TAG,"Listener-onTimelineChanged... TO: " + seek);
+                    player.seekTo(seek);
                 }
 
                 @Override
@@ -185,7 +193,9 @@ public class Play extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.v(TAG, "Destruido");
+        DataMovie dataMovie = new DataMovie(movie, instance);
+        dataMovie.saveSeek(player.getCurrentPosition() > 5000 ? player.getCurrentPosition() -5000: player.getCurrentPosition());
+        Log.v(TAG, "Destruido: " + player.getCurrentPosition());
         player.release();
     }
 

@@ -81,16 +81,17 @@ public class Filmes extends AppCompatActivity {
         descView.putExtras(b);
         instance.startActivity(descView);
     }
-
-    public static void openVideo(String url){
+    public static void openVideo(String url, final long seek, final String name){
         url_final = url;
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
             mInterstitialAd.setAdListener(new AdListener(){
                 @Override
                 public void onAdClosed() {
-                    Log.d("AD", "AD WAS CLOSED");
+                    Log.d("AD", "AD WAS CLOSED " + seek);
                     Intent videoView = new Intent(instance, Play.class);
+                    videoView.putExtra("seek", seek);
+                    videoView.putExtra("movie", name);
                     instance.startActivity(videoView);
                     mInterstitialAd.loadAd(new AdRequest.Builder().build());
                 }
@@ -99,9 +100,10 @@ public class Filmes extends AppCompatActivity {
             Log.d("AD", "AD ISn't LOADED");
             Toast.makeText(instance, "The interstitial wasn't loaded yet.", Toast.LENGTH_SHORT);
             Intent videoView = new Intent(instance, Play.class);
+            videoView.putExtra("seek", seek);
+            videoView.putExtra("movie", name);
             instance.startActivity(videoView);
         }
-
     }
 
     @Override
