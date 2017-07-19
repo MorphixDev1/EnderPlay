@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <ImageView
+        android:id="@+id/item_imagem"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:background="@color/black"
+        android:gravity="top"
+        />
+    <!--LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/filme_nome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teste View"
+            android:textSize="20dp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/filme_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="teste desc"
+            android:textSize="12dp"
+            android:textColor="@color/white"/>
+    </LinearLayout-->
+
+</RelativeLayout>

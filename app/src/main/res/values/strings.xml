@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">EnderFilmes</string>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="info">#115E7A</color>
+    <string name="title_activity_test">testActivity</string>
+    <string name="title_activity_testactivity">testactivity</string>
+    <string name="buscar">Buscar</string>
+</resources>
