@@ -1,12 +1,12 @@
 package br.com.endcraft.me.endcraft;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -18,6 +18,7 @@ import android.view.SubMenu;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
@@ -40,6 +41,8 @@ public class Filmes extends AppCompatActivity {
     public static String url_final = "";
     private GridView list;
     private static InterstitialAd mInterstitialAd;
+    private DrawerLayout drawerLayout;
+    private ListView drawerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,15 +50,16 @@ public class Filmes extends AppCompatActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.filmes_main);
+        instance = this;
         setSupportActionBar((Toolbar) findViewById(R.id.actionbar));
+
         MobileAds.initialize(this, "ca-app-pub-6681846718813637~1550150705");
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-6681846718813637/7457083506");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        instance = this;
+
         list = (GridView) findViewById(R.id.itens);
         new LoadMovies(this, list).execute("https://ender.tk/filme/data.php?getmovies=1");
-
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
@@ -141,15 +145,14 @@ public class Filmes extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getGroupId()){
             case 255:
                 groupId255(item);
+                break;
             case 100:
                 groupId100(item);
+                break;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 

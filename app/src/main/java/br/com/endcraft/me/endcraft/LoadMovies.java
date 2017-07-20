@@ -11,8 +11,6 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
