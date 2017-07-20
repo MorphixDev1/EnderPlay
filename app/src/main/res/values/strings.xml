@@ -7,4 +7,6 @@
     <string name="title_activity_testactivity">testactivity</string>
     <string name="buscar">Buscar</string>
     <string name="categorias">Categorias</string>
+    <string name="sobre">Sobre</string>
+    <string name="sobre_msg">EnderFilmes\nAplicativo do site https://ender.tk\n @JonasXPX Build v1.1</string>
 </resources>

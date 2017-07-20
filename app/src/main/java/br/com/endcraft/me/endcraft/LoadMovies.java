@@ -3,7 +3,6 @@ package br.com.endcraft.me.endcraft;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.widget.GridView;
-import android.widget.ListView;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -12,6 +11,8 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
@@ -22,11 +23,11 @@ import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
 
 public class LoadMovies extends AsyncTask<String, Void, List<Movie>> {
 
-    private Activity ab;
+    private Activity activity;
     private GridView view;
 
     public LoadMovies(Activity ab, GridView view) {
-        this.ab = ab;
+        this.activity = ab;
         this.view = view;
     }
 
@@ -45,8 +46,17 @@ public class LoadMovies extends AsyncTask<String, Void, List<Movie>> {
                 m = new Movie();
                 m.setImgLink(data.getString("poster"));
                 m.setNome(data.getJSONObject("nome").getString("0"));
-                m.setIdioma(data.getString("categoriaf"));
+                JSONObject idioma = data.getJSONObject("idioma");
+                m.setIdioma( idioma.has("0") ?  idioma.getString("0") : "Português" );
                 m.setLink(data.getJSONObject("url").getString("0"));
+                List<Categoria> categorias = new ArrayList<>();
+                JSONArray array = data.getJSONArray("categoria");
+                for(int e=0; e<array.length();e++){
+                    Categoria categoria = Categoria.byName(array.getString(e));
+                    if(categoria != null)
+                        categorias.add(categoria);
+                }
+                m.setCategorias(categorias);
                 filmes.add(m);
             }
         }catch (Exception e){
@@ -59,7 +69,7 @@ public class LoadMovies extends AsyncTask<String, Void, List<Movie>> {
 
     @Override
     protected void onPostExecute(List<Movie> movies) {
-        AdapterCustomFilmes adapterCustomFilmes = new AdapterCustomFilmes(movies, this.ab);
+        AdapterCustomFilmes adapterCustomFilmes = new AdapterCustomFilmes(movies, activity);
         view.setAdapter(adapterCustomFilmes);
     }
 }

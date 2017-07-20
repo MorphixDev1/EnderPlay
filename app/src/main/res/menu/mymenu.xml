@@ -7,16 +7,4 @@
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView"/>
-
-
-    <!--item
-        android:title="@string/categorias"
-        app:showAsAction="always"
-        android:id="@+id/menuAction"
-        android:icon="@android:drawable/ic_dialog_dialer">
-        <menu>
-            <item android:id="@+id/cat"
-                android:title="Nnnnn"/>
-        </menu>
-    </item-->
 </menu>

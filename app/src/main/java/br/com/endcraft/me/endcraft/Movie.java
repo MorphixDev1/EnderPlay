@@ -1,5 +1,7 @@
 package br.com.endcraft.me.endcraft;
 
+import java.util.List;
+
 /**
  * Created by JonasXPX on 18.jul.2017.
  */
@@ -10,12 +12,21 @@ public class Movie {
     private String nome = "";
     private String idioma = "";
     private String imgLink = "";
+    private List<Categoria> categorias = null;
 
     public Movie(){  }
 
     public Movie(String nome, String imgLink){
         this.nome = nome;
         this.imgLink = imgLink;
+    }
+
+    public void setCategorias(List<Categoria> categorias) {
+        this.categorias = categorias;
+    }
+
+    public List<Categoria> getCategorias() {
+        return categorias;
     }
 
     public String getImgLink() {
