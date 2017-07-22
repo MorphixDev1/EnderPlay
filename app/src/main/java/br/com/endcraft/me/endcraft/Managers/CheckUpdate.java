@@ -1,11 +1,9 @@
 package br.com.endcraft.me.endcraft.Managers;
 
-import android.net.Uri;
 import android.os.AsyncTask;
 
 import org.apache.commons.io.IOUtils;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 

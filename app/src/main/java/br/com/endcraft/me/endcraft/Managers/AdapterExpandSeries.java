@@ -1,13 +1,11 @@
 package br.com.endcraft.me.endcraft.Managers;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.com.endcraft.me.endcraft.Filmes;

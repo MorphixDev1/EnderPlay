@@ -1,10 +1,5 @@
 package br.com.endcraft.me.endcraft.Managers;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 

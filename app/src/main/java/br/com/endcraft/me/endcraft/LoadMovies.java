@@ -2,7 +2,6 @@ package br.com.endcraft.me.endcraft;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.view.View;
 import android.widget.GridView;
 
 import org.apache.commons.io.IOUtils;

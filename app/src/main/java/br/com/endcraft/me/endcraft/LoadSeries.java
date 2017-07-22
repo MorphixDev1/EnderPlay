@@ -3,8 +3,6 @@ package br.com.endcraft.me.endcraft;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.GridView;
 
 import org.apache.commons.io.IOUtils;
@@ -16,7 +14,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
