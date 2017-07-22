@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomTheme" parent="MaterialDrawerTheme">
+        <item name="material_drawer_background">#FFF</item>
+    </style>
+</resources>

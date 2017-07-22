@@ -56,12 +56,13 @@ public class DownloadImage  extends AsyncTask<String, Void, Bitmap> {
         Bitmap bm = null;
         FileOutputStream out = null;
         try{
-            InputStream in = new URL("https://ender.tk/filme/resize.php?URL=" + url).openStream();
+            Log.d("INFO", "TRY DOWNLOAD IMG: " + url.replaceFirst("http:", "https:"));
+            InputStream in = new URL("https://ender.tk/filme/resize.php?URL=" + url.replaceFirst("http:", "https:")).openStream();
             bm = BitmapFactory.decodeStream(in);
             bm.compress(Bitmap.CompressFormat.PNG, 100, out = (new FileOutputStream(new File(activity.getCacheDir(), "img/" + hash + ".png"))));
             Log.d("INFO", "Downloaded image: " + url);
         }catch (Exception e){
-            Log.d("WARN", e.getMessage());
+            e.printStackTrace();
         } finally {
            try{if(out!=null)out.close();}catch (IOException e){};
         }

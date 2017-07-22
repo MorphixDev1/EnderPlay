@@ -2,11 +2,20 @@
     <string name="app_name">EnderFilmes</string>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="selected_color">#0a565e</color>
+    <color name="unselected_color">#000000</color>
     <color name="info">#115E7A</color>
     <string name="title_activity_test">testActivity</string>
     <string name="title_activity_testactivity">testactivity</string>
     <string name="buscar">Buscar</string>
     <string name="categorias">Categorias</string>
     <string name="sobre">Sobre</string>
-    <string name="sobre_msg">EnderFilmes\nAplicativo do site https://ender.tk\n @JonasXPX Build v1.1</string>
+    <string name="sobre_msg">EnderFilmes\nAplicativo do site https://ender.tk\n@JonasXPX Build v1.2</string>
+    <string name="title_activity_series">Series</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="series">Séries</string>
 </resources>

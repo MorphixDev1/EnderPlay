@@ -42,6 +42,10 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+
 import br.com.endcraft.me.endcraft.Managers.DataMovie;
 
 /**
@@ -64,6 +68,7 @@ public class Play extends AppCompatActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         setContentView(R.layout.play);
         instance = this;
 
@@ -92,7 +97,9 @@ public class Play extends AppCompatActivity {
 
     }
     public void play(String url){
-        Uri videoUri = Uri.parse(url);
+        Uri videoUri = Uri.parse(url.replaceAll(" ", "%20"));
+        Log.d("LOG", "TRY TO PLAY: " + videoUri);
+        Log.d("LOG", "MATCHES: " + url.matches("http[:s].*"));
         try{
             DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();
             DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, "EnderFilmes"), bandwidthMeterA);
@@ -122,7 +129,7 @@ public class Play extends AppCompatActivity {
                 @Override
                 public void onLoadingChanged(boolean isLoading) {
                     Log.v(TAG,"Listener-onLoadingChanged...");
-                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN);
+                    hideSystemUI();
                 }
 
                 @Override
@@ -168,15 +175,6 @@ public class Play extends AppCompatActivity {
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            hideSystemUI(this.getWindow().getDecorView());
-        }
-
-    }
-
-    @Override
     protected void onStop() {
         super.onPause();
         player.setPlayWhenReady(false);
@@ -199,17 +197,17 @@ public class Play extends AppCompatActivity {
         player.release();
     }
 
-    private void hideSystemUI(View mDecorView) {
+    private void hideSystemUI() {
         // Set the IMMERSIVE flag.
         // Set the content to appear under the system bars so that the content
         // doesn't resize when the system bars hide and show.
-        mDecorView.setSystemUiVisibility(
+        this.getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     private void showSystemUI(View mDecorView) {
@@ -218,5 +216,17 @@ public class Play extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
-
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            this.getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 }

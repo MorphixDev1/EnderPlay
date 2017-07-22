@@ -3,6 +3,7 @@ package br.com.endcraft.me.endcraft;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.view.MenuItemCompat;
@@ -14,7 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.GridView;
@@ -25,11 +27,22 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
+import br.com.endcraft.me.endcraft.Managers.Series;
 
 /**
  * Created by JonasXPX on 18.jul.2017.
@@ -39,19 +52,27 @@ public class Filmes extends AppCompatActivity {
 
     public static Filmes instance;
     public static String url_final = "";
+    public static Series current_serie;
     private GridView list;
     private static InterstitialAd mInterstitialAd;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
+    private View loading;
+    private DrawerBuilder drawer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.filmes_main);
         instance = this;
+
         setSupportActionBar((Toolbar) findViewById(R.id.actionbar));
+
+        createDrawer();
 
         MobileAds.initialize(this, "ca-app-pub-6681846718813637~1550150705");
         mInterstitialAd = new InterstitialAd(this);
@@ -59,10 +80,62 @@ public class Filmes extends AppCompatActivity {
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         list = (GridView) findViewById(R.id.itens);
-        new LoadMovies(this, list).execute("https://ender.tk/filme/data.php?getmovies=1");
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
+        loadMovies();
+    }
+
+    private void loadMovies(){
+        new LoadMovies(this, list).execute("https://ender.tk/filme/data.php?getmovies=1");
+    }
+
+    private void loadSeries(){
+        Log.d("ASD", "LOADED");
+        new LoadSeries(this, list).execute("https://ender.tk/filme/data.php?getseries=1");
+    }
+
+    private void createDrawer() {
+        drawer = new DrawerBuilder().withActivity(this).withToolbar((Toolbar) findViewById(R.id.actionbar));
+        SectionDrawerItem sesion = new SectionDrawerItem().withName("Categorias").withTextColor(Color.GRAY);
+        drawer.addDrawerItems(new DividerDrawerItem());
+        drawer.addDrawerItems(new PrimaryDrawerItem().withIdentifier(1)
+                .withName("Filmes")
+                .withIcon(FontAwesome.Icon.faw_film)
+                .withTextColor(Color.WHITE)
+                .withSelectedColor(getResources().getColor(R.color.selected_color))
+                .withSelectedTextColor(Color.WHITE));
+        drawer.addDrawerItems(new SecondaryDrawerItem().withIdentifier(2).withName("Séries").withIcon(FontAwesome.Icon.faw_film)
+                .withTextColor(Color.WHITE)
+                .withSelectedColor(getResources().getColor(R.color.selected_color))
+                .withSelectedTextColor(Color.WHITE));
+        drawer.addDrawerItems(sesion);
+        for(Categoria categoria : Categoria.values()){
+            drawer.addDrawerItems(new SecondaryDrawerItem().withIdentifier(categoria.id).withName(categoria.getNome())
+                    .withTextColor(Color.WHITE)
+                    .withSelectedColor(getResources().getColor(R.color.selected_color))
+                    .withSelectedTextColor(Color.WHITE));
+        }
+
+        drawer.withSliderBackgroundColor(Color.rgb(75,75,75));
+        drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                Log.d("DEGUB", "CLICKED: " + position);
+                switch (position){
+                    case 1:
+                        loadMovies();
+                        return false;
+                    case 2:
+                        loadSeries();
+                        return false;
+                }
+                groupId255(Categoria.byName(((Nameable)drawerItem).getName().getText()));
+                return false;
+            }
+        });
+
+        Drawer d = drawer.build();
     }
 
     public static void openDesc(Movie mov){
@@ -107,18 +180,11 @@ public class Filmes extends AppCompatActivity {
         final Vibrator vibrator = (Vibrator) instance.getSystemService(VIBRATOR_SERVICE);
         SearchView search = (SearchView) MenuItemCompat.getActionView(menuItem);
 
-        SubMenu sub_cat = menu.addSubMenu(0, -1, 0, "Categorias");
-
         menu.add(100, 0, 0, R.string.sobre);
-
-        for(Categoria categoria : Categoria.values()){
-            sub_cat.add(255, categoria.id, 0, categoria.getNome());
-        }
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                vibrator.vibrate(250);
                 return false;
             }
 
@@ -147,7 +213,7 @@ public class Filmes extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getGroupId()){
             case 255:
-                groupId255(item);
+               // groupId255(item);
                 break;
             case 100:
                 groupId100(item);
@@ -163,17 +229,15 @@ public class Filmes extends AppCompatActivity {
         return false;
     }
 
-    private boolean groupId255(MenuItem item){
-        Categoria cat = Categoria.byId(item.getItemId());
-        if(cat == null)
+    private boolean groupId255(Categoria item){
+        if(item == null)
             return true;
-        Toast.makeText(this, cat.getNome(), Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(this, item.getNome(), Toast.LENGTH_SHORT).show();
         try {
             AdapterCustomFilmes adapter = (AdapterCustomFilmes) list.getAdapter();
             List<Movie> movies = new ArrayList<Movie>();
             for (Movie mv : adapter.getFilmesclone())
-                if(mv.getCategorias().contains(cat))
+                if(mv.getCategorias().contains(item))
                     movies.add(mv);
             adapter.setFilmes(movies);
             list.setAdapter(adapter);
