@@ -69,7 +69,7 @@ public class AdapterCustomFilmes extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 DataMovie dataMovie = new DataMovie(movie.getNome(), activity);
-                Filmes.openVideo(movie.getLink(), dataMovie.getSeekPosition(), movie.getNome());
+                Filmes.openDesc(movie.getLink(), dataMovie.getSeekPosition(), movie);
             }
         });
         if(movie != null) {

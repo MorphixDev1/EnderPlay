@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.io.Serializable;
+
 import br.com.endcraft.me.endcraft.Movie;
 
 /**
  * Created by JonasXPX on 19.jul.2017.
  */
 
-public class DataMovie {
+public class DataMovie implements Serializable{
 
     private final String movie;
     private final Activity activity;
@@ -30,10 +32,10 @@ public class DataMovie {
         Log.d("SEEK", this.movie);
     }
 
-    public void saveSeek(long possition){
+    public void saveSeek(long position){
         pre = activity.getSharedPreferences(PREFS_NAME, 0);
         editor = pre.edit();
-        editor.putLong(movie.replaceAll("\\s", "").toLowerCase(), possition);
+        editor.putLong(movie.replaceAll("\\s", "").toLowerCase(), position);
         editor.commit();
     }
 

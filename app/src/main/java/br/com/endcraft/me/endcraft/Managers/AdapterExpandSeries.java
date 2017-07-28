@@ -1,5 +1,6 @@
 package br.com.endcraft.me.endcraft.Managers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -91,7 +92,8 @@ public class AdapterExpandSeries extends BaseExpandableListAdapter {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Filmes.openVideo(temporada.getUrl(), 0, series.getName() + "-" + temporada.getName() + "-" + temporada.getEpNumber());
+                DataMovie dataMovie = new DataMovie(series.getName() + "_" + temporada.getEpNumber(), (Activity) context);
+                Filmes.openVideo(temporada.getUrl(), dataMovie.getSeekPosition(), series.getName() + "_" + temporada.getEpNumber(), null);
             }
         });
 

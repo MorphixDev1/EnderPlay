@@ -1,17 +1,20 @@
 package br.com.endcraft.me.endcraft;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by JonasXPX on 18.jul.2017.
  */
 
-public class Movie {
+public class Movie implements Serializable{
 
     private String link = "";
     private String nome = "";
     private String idioma = "";
     private String imgLink = "";
+    private String bannerLink = "";
+    private String desc = "";
     private List<Categoria> categorias = null;
 
     public Movie(){  }
@@ -19,6 +22,23 @@ public class Movie {
     public Movie(String nome, String imgLink){
         this.nome = nome;
         this.imgLink = imgLink;
+    }
+
+    public String getBannerLink() {
+        return bannerLink;
+    }
+
+    public void setBannerLink(String bannerLink) {
+        this.bannerLink = bannerLink;
+    }
+
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public void setCategorias(List<Categoria> categorias) {

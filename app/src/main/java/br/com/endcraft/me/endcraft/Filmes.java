@@ -1,9 +1,9 @@
 package br.com.endcraft.me.endcraft;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -24,11 +24,11 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -42,6 +42,7 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.endcraft.me.endcraft.Managers.AdManager;
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomSeries;
 import br.com.endcraft.me.endcraft.Managers.CheckUpdate;
@@ -62,7 +63,7 @@ public class Filmes extends AppCompatActivity {
     private ListView drawerList;
     private View loading;
     private DrawerBuilder drawer;
-    private FirebaseAnalytics mFirebaseAnalytics;
+    private static RewardedVideoAd ad;
 
 
     @Override
@@ -74,22 +75,29 @@ public class Filmes extends AppCompatActivity {
         setContentView(R.layout.filmes_main);
         instance = this;
 
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
         setSupportActionBar((Toolbar) findViewById(R.id.actionbar));
 
         createDrawer();
 
         MobileAds.initialize(this, "ca-app-pub-6681846718813637~1550150705");
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-6681846718813637/7457083506");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        /*mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-6681846718813637/2042677168");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());*/
+
+        ad = MobileAds.getRewardedVideoAdInstance(this);
+
 
         list = (GridView) findViewById(R.id.itens);
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
         loadMovies();
+
+        loadAd();
+    }
+
+    private static void loadAd() {
+        ad.loadAd("ca-app-pub-6681846718813637/2042677168", new AdRequest.Builder().build());
     }
 
     private void loadMovies(){
@@ -97,7 +105,6 @@ public class Filmes extends AppCompatActivity {
     }
 
     private void loadSeries(){
-        Log.d("ASD", "LOADED");
         new LoadSeries(this, list).execute("https://ender.tk/filme/data.php?getseries=1");
     }
 
@@ -144,36 +151,48 @@ public class Filmes extends AppCompatActivity {
         Drawer d = drawer.build();
     }
 
-    public static void openDesc(Movie mov){
+    public static void openDesc(String url, long seek, Movie movie){
         Intent descView = new Intent(instance, Descview.class);
-        Bundle b = new Bundle();
-        b.putCharSequence("movie", mov.getNome());
-        b.putCharSequence("idioma", mov.getIdioma());
-        descView.putExtras(b);
+        descView.putExtra("seek", seek);
+        descView.putExtra("movie", movie);
         instance.startActivity(descView);
     }
-    public static void openVideo(String url, final long seek, final String name){
+    public static void openVideo(String url, final long seek, final String name, Activity activity1){
+        if(activity1 == null)
+            activity1 = instance;
+        final Activity activity = activity1;
         url_final = url;
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-            mInterstitialAd.setAdListener(new AdListener(){
-                @Override
-                public void onAdClosed() {
-                    Log.d("AD", "AD WAS CLOSED " + seek);
-                    Intent videoView = new Intent(instance, Play.class);
-                    videoView.putExtra("seek", seek);
-                    videoView.putExtra("movie", name);
-                    instance.startActivity(videoView);
-                    mInterstitialAd.loadAd(new AdRequest.Builder().build());
-                }
-            });
+        AdManager adManager = new AdManager() {
+            @Override
+            public void onRewarded(RewardItem rewardItem) {
+                Log.d("AD", "AD WAS CLOSED " + seek);
+                Intent videoView = new Intent(activity, Play.class);
+                videoView.putExtra("seek", seek);
+                videoView.putExtra("movie", name);
+                activity.startActivity(videoView);
+                loadAd();
+            }
+
+            @Override
+            public void onRewardedVideoAdClosed() {
+                Log.d("AD", "AD WAS CLOSED " + seek);
+                Intent videoView = new Intent(activity, Play.class);
+                videoView.putExtra("seek", seek);
+                videoView.putExtra("movie", name);
+                activity.startActivity(videoView);
+                loadAd();
+            }
+        };
+        ad.setRewardedVideoAdListener(adManager);
+        if (ad.isLoaded()) {
+            ad.show();
         } else {
-            Log.d("AD", "AD ISn't LOADED");
-            Toast.makeText(instance, "The interstitial wasn't loaded yet.", Toast.LENGTH_SHORT);
-            Intent videoView = new Intent(instance, Play.class);
+            Log.d("AD", "AD ISN't LOADED");
+            Intent videoView = new Intent(activity, Play.class);
             videoView.putExtra("seek", seek);
             videoView.putExtra("movie", name);
-            instance.startActivity(videoView);
+            activity.startActivity(videoView);
+            //loadAd();
         }
     }
 
@@ -242,7 +261,7 @@ public class Filmes extends AppCompatActivity {
 
     private boolean groupId100(MenuItem item) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage(R.string.sobre_msg).setTitle("Sobre");
+        dialog.setMessage(getString(R.string.sobre_msg) + BuildConfig.VERSION_NAME).setTitle("Sobre");
         dialog.create().show();
         return false;
     }
@@ -262,7 +281,7 @@ public class Filmes extends AppCompatActivity {
             List<Movie> movies = new ArrayList<Movie>();
             for (Movie mv : adapter.getFilmesclone())
                 if(mv.getCategorias().contains(item))
-                    movies.add(mv); 
+                    movies.add(mv);
             adapter.setFilmes(movies);
             list.setAdapter(adapter);
         }catch (Exception e){

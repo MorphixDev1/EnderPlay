@@ -10,7 +10,7 @@
     <string name="buscar">Buscar</string>
     <string name="categorias">Categorias</string>
     <string name="sobre">Sobre</string>
-    <string name="sobre_msg">EnderFilmes\nAplicativo do site https://ender.tk\n@JonasXPX Build v1.2</string>
+    <string name="sobre_msg">EnderFilmes\nAplicativo do site https://ender.tk\nNovos Filmes são exibidos no início da lista\n@JonasXPX Build </string>
     <string name="title_activity_series">Series</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -24,4 +24,11 @@
     <string name="alread_update">Seu Aplicativo já está atualizado.</string>
     <string name="check_update">Checando...</string>
     <string name="new_update_found">Uma nova versão foi encontrada:</string>
+
+    <string name="font_family_light">sans-serif-light</string>
+    <string name="font_family_medium">sans-serif-medium</string>
+    <string name="font_family_regular">sans-serif</string>
+    <string name="font_family_condensed">sans-serif-condensed</string>
+    <string name="font_family_black">sans-serif-black</string>
+    <string name="font_family_thin">sans-serif-thin</string>
 </resources>
