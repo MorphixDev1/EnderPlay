@@ -42,7 +42,6 @@ public class DownloadImage  extends AsyncTask<String, Void, Bitmap> {
         File folder = new File(activity.getCacheDir(), "img/");
         folder.mkdirs();
         File file = new File(activity.getCacheDir(), "img/" + hash + ".png");
-        //Log.d("HASH", hash);
         if(file.exists()){
             return BitmapFactory.decodeFile(file.getAbsolutePath());
         }

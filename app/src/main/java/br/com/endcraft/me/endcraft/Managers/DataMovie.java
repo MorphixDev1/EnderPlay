@@ -18,7 +18,6 @@ public class DataMovie {
     private SharedPreferences pre;
     public static final String PREFS_NAME = "ENDER";
 
-
     public DataMovie(Movie movie, Activity activity) {
         this.movie = movie.getNome().replaceAll("\\s", "");
         this.activity = activity;

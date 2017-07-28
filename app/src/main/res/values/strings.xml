@@ -18,4 +18,10 @@
 
     <string name="action_settings">Settings</string>
     <string name="series">Séries</string>
+    <string name="buscar_at">Buscar atualização</string>
+    <string name="update_title">Atualização</string>
+    <string name="update_ok">Atualizar</string>
+    <string name="alread_update">Seu Aplicativo já está atualizado.</string>
+    <string name="check_update">Checando...</string>
+    <string name="new_update_found">Uma nova versão foi encontrada:</string>
 </resources>

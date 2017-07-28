@@ -74,7 +74,7 @@ public class AdapterExpandSeries extends BaseExpandableListAdapter {
             view = layoutInflater.inflate(R.layout.list_ep, null);
         }
         TextView temporadas = (TextView) view.findViewById(R.id.temporadas);
-        temporadas.setText("Episódio " + ep);
+        temporadas.setText(ep + "ª Temporada");
         return view;
     }
 

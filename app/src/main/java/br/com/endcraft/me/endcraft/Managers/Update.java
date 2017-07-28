@@ -8,6 +8,8 @@ public class Update {
 
     private final String version;
     private boolean newVersion;
+    private String lastVersion;
+    private String link;
 
     public Update(String version) {
         this.version = version;
@@ -15,6 +17,14 @@ public class Update {
 
     public String getVersion() {
         return version;
+    }
+
+    public void setDownloadLink(String link){
+        this.link = link;
+    }
+
+    public String getDownloadLink() {
+        return link;
     }
 
     public boolean hasNewVersion(){
@@ -25,4 +35,11 @@ public class Update {
         this.newVersion = b;
     }
 
+    public String getLastVersion() {
+        return lastVersion;
+    }
+
+    public void setLastVersion(String lastVersion) {
+        this.lastVersion = lastVersion;
+    }
 }

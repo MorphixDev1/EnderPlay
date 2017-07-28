@@ -3,6 +3,7 @@ package br.com.endcraft.me.endcraft;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -40,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
+import br.com.endcraft.me.endcraft.Managers.AdapterCustomSeries;
+import br.com.endcraft.me.endcraft.Managers.CheckUpdate;
 import br.com.endcraft.me.endcraft.Managers.Series;
 
 /**
@@ -178,6 +182,7 @@ public class Filmes extends AppCompatActivity {
         final Vibrator vibrator = (Vibrator) instance.getSystemService(VIBRATOR_SERVICE);
         SearchView search = (SearchView) MenuItemCompat.getActionView(menuItem);
 
+        menu.add(101, 0, 0, R.string.buscar_at);
         menu.add(100, 0, 0, R.string.sobre);
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -189,15 +194,22 @@ public class Filmes extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 try {
-                    AdapterCustomFilmes adpter = (AdapterCustomFilmes) list.getAdapter();
-                    List<Movie> movies = new ArrayList<Movie>();
-                    for (Movie mv : adpter.getFilmesclone()) {
-                        if (mv.getNome().toLowerCase().contains(newText.toLowerCase().trim())) {
-                            movies.add(mv);
+                    BaseAdapter adapter = null;
+                    if(list.getAdapter() instanceof AdapterCustomFilmes){
+                        adapter = (AdapterCustomFilmes) list.getAdapter();
+                        List<Movie> movies = new ArrayList<Movie>();
+                        for (Movie mv : ((AdapterCustomFilmes)adapter).getFilmesclone()) {
+                            if (mv.getNome().toLowerCase().contains(newText.toLowerCase().trim())) {
+                                movies.add(mv);
+                            }
                         }
+                        ((AdapterCustomFilmes)adapter).setFilmes(movies);
+                    } else if(list.getAdapter() instanceof AdapterCustomSeries){
+                        adapter = (AdapterCustomSeries) list.getAdapter();
+
                     }
-                    adpter.setFilmes(movies);
-                    list.setAdapter(adpter);
+
+                    list.setAdapter(adapter);
                 }catch (Exception e){
                     Toast.makeText(instance, "Aguarde", Toast.LENGTH_SHORT).show();
                 }
@@ -216,6 +228,10 @@ public class Filmes extends AppCompatActivity {
             case 100:
                 groupId100(item);
                 break;
+            case 101:
+                groupId101(item);
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -226,6 +242,12 @@ public class Filmes extends AppCompatActivity {
         dialog.create().show();
         return false;
     }
+
+    private boolean groupId101(MenuItem item){
+        new CheckUpdate(this).execute(BuildConfig.VERSION_NAME);
+        return false;
+    }
+
 
     private boolean groupId255(Categoria item){
         if(item == null)
