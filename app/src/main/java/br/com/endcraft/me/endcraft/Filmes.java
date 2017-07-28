@@ -28,6 +28,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -61,6 +62,7 @@ public class Filmes extends AppCompatActivity {
     private ListView drawerList;
     private View loading;
     private DrawerBuilder drawer;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Override
@@ -71,6 +73,8 @@ public class Filmes extends AppCompatActivity {
 
         setContentView(R.layout.filmes_main);
         instance = this;
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         setSupportActionBar((Toolbar) findViewById(R.id.actionbar));
 
@@ -258,7 +262,7 @@ public class Filmes extends AppCompatActivity {
             List<Movie> movies = new ArrayList<Movie>();
             for (Movie mv : adapter.getFilmesclone())
                 if(mv.getCategorias().contains(item))
-                    movies.add(mv);
+                    movies.add(mv); 
             adapter.setFilmes(movies);
             list.setAdapter(adapter);
         }catch (Exception e){

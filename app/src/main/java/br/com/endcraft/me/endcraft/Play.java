@@ -116,7 +116,6 @@ public class Play extends AppCompatActivity {
                 @Override
                 public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
                     Log.v(TAG,"Listener-onTracksChanged...");
-
                 }
 
                 @Override
@@ -169,7 +168,7 @@ public class Play extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        super.onPause();
+        super.onStop();
         player.setPlayWhenReady(false);
         Log.d(TAG, "Player called onStop()");
     }
