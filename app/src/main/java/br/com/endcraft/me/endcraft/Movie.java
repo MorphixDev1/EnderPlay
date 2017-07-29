@@ -15,6 +15,7 @@ public class Movie implements Serializable{
     private String imgLink = "";
     private String bannerLink = "";
     private String desc = "";
+    private String subtitleLink = "";
     private List<Categoria> categorias = null;
 
     public Movie(){  }
@@ -22,6 +23,14 @@ public class Movie implements Serializable{
     public Movie(String nome, String imgLink){
         this.nome = nome;
         this.imgLink = imgLink;
+    }
+
+    public String getSubtitleLink() {
+        return subtitleLink;
+    }
+
+    public void setSubtitleLink(String subtitleLink) {
+        this.subtitleLink = subtitleLink;
     }
 
     public String getBannerLink() {

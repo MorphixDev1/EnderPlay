@@ -49,13 +49,10 @@ public class LoadMovies extends AsyncTask<String, Void, List<Movie>> {
                     JSONObject desc = data.getJSONObject("desc");
                     m.setDesc(desc.has("0") ? desc.getString("0") : "Filme sem descrição :(");
                 }
-                JSONObject banner = null;
-                if(data.get("banner") instanceof JSONObject) {
-                    banner = data.getJSONObject("banner");
-                    m.setBannerLink(banner.has("0") ? banner.getString("0") : "");
-                }
+                m.setBannerLink(data.get("banner") instanceof JSONObject ? data.getJSONObject("banner").getString("0") : "");
                 m.setIdioma( idioma.has("0") ?  idioma.getString("0") : "Português" );
                 m.setLink(data.getJSONObject("url").getString("0"));
+                m.setSubtitleLink(data.get("subtitles") instanceof JSONObject ? data.getJSONObject("subtitles").getString("0") : "");
                 List<Categoria> categorias = new ArrayList<>();
                 JSONArray array = data.getJSONArray("categoria");
                 for(int e=0; e<array.length();e++){

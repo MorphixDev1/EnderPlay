@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +25,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
@@ -40,6 +42,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import br.com.endcraft.me.endcraft.Managers.AdManager;
@@ -79,13 +82,13 @@ public class Filmes extends AppCompatActivity {
 
         createDrawer();
 
-        MobileAds.initialize(this, "ca-app-pub-6681846718813637~1550150705");
-        /*mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-6681846718813637/2042677168");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());*/
-
-        ad = MobileAds.getRewardedVideoAdInstance(this);
-
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-6681846718813637/7457083506");
+        mInterstitialAd.loadAd(new AdRequest.Builder()
+                .setBirthday(new GregorianCalendar(1990,1,1).getTime())
+                .addKeyword("trailer")
+                .build());
+        mInterstitialAd.setImmersiveMode(true);
 
         list = (GridView) findViewById(R.id.itens);
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -93,11 +96,13 @@ public class Filmes extends AppCompatActivity {
 
         loadMovies();
 
-        loadAd();
+        //loadAd();
     }
 
-    private static void loadAd() {
+    protected static void loadAd() {
         ad.loadAd("ca-app-pub-6681846718813637/2042677168", new AdRequest.Builder().build());
+        ad.setImmersiveMode(true);
+        Log.d("AD", "AD loaded ");
     }
 
     private void loadMovies(){
@@ -151,49 +156,47 @@ public class Filmes extends AppCompatActivity {
         Drawer d = drawer.build();
     }
 
-    public static void openDesc(String url, long seek, Movie movie){
+    public static void openDesc(long seek, Movie movie){
         Intent descView = new Intent(instance, Descview.class);
         descView.putExtra("seek", seek);
         descView.putExtra("movie", movie);
         instance.startActivity(descView);
     }
-    public static void openVideo(String url, final long seek, final String name, Activity activity1){
+    public static void openVideo(String url, final long seek, final String name, Activity activity1, @Nullable final Movie movie){
         if(activity1 == null)
             activity1 = instance;
         final Activity activity = activity1;
         url_final = url;
-        AdManager adManager = new AdManager() {
-            @Override
-            public void onRewarded(RewardItem rewardItem) {
-                Log.d("AD", "AD WAS CLOSED " + seek);
-                Intent videoView = new Intent(activity, Play.class);
-                videoView.putExtra("seek", seek);
-                videoView.putExtra("movie", name);
-                activity.startActivity(videoView);
-                loadAd();
-            }
-
-            @Override
-            public void onRewardedVideoAdClosed() {
-                Log.d("AD", "AD WAS CLOSED " + seek);
-                Intent videoView = new Intent(activity, Play.class);
-                videoView.putExtra("seek", seek);
-                videoView.putExtra("movie", name);
-                activity.startActivity(videoView);
-                loadAd();
-            }
-        };
-        ad.setRewardedVideoAdListener(adManager);
-        if (ad.isLoaded()) {
-            ad.show();
+        if(mInterstitialAd.isLoaded()){
+            mInterstitialAd.show();
+            mInterstitialAd.setAdListener(new AdListener(){
+                @Override
+                public void onAdClosed() {
+                    Log.d("AD", "Propaganda foi fechada");
+                    Intent videoView = new Intent(activity, Play.class);
+                    videoView.putExtra("seek", seek);
+                    videoView.putExtra("movie", name);
+                    if(movie != null){
+                        videoView.putExtra("moviedata", movie);
+                    }
+                    activity.startActivity(videoView);
+                    mInterstitialAd.loadAd(new AdRequest.Builder()
+                            .setBirthday(new GregorianCalendar(1990,1,1).getTime())
+                            .addKeyword("trailer")
+                            .build());
+                }
+            });
         } else {
-            Log.d("AD", "AD ISN't LOADED");
+            Log.d("AD", "Propaganda não foi carregada");
             Intent videoView = new Intent(activity, Play.class);
             videoView.putExtra("seek", seek);
             videoView.putExtra("movie", name);
+            if(movie != null){
+                videoView.putExtra("moviedata", movie);
+            }
             activity.startActivity(videoView);
-            //loadAd();
         }
+
     }
 
 

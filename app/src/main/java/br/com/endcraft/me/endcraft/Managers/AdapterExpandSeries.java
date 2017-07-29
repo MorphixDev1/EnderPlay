@@ -93,7 +93,7 @@ public class AdapterExpandSeries extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 DataMovie dataMovie = new DataMovie(series.getName() + "_" + temporada.getEpNumber(), (Activity) context);
-                Filmes.openVideo(temporada.getUrl(), dataMovie.getSeekPosition(), series.getName() + "_" + temporada.getEpNumber(), null);
+                Filmes.openVideo(temporada.getUrl(), dataMovie.getSeekPosition(), series.getName() + "_" + temporada.getEpNumber(), null, null);
             }
         });
 

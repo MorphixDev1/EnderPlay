@@ -12,10 +12,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -25,22 +27,20 @@ import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.MergingMediaSource;
+import com.google.android.exoplayer2.source.SingleSampleMediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 import br.com.endcraft.me.endcraft.Managers.DataMovie;
 
@@ -56,6 +56,8 @@ public class Play extends AppCompatActivity {
     private Play instance;
     private long seek;
     private String movie;
+    private final BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+    private Movie moviedata;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,13 +71,12 @@ public class Play extends AppCompatActivity {
 
 
         Handler mainHandler = new Handler();
-        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        TrackSelector trackSelector = new DefaultTrackSelector( videoTrackSelectionFactory);
-
+        DefaultTrackSelector trackSelector = new DefaultTrackSelector( videoTrackSelectionFactory);
         LoadControl loadControl = new DefaultLoadControl();
 
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
+
         simpleExoPlayerView = new SimpleExoPlayerView(this);
         simpleExoPlayerView = (SimpleExoPlayerView) findViewById(R.id.exoPlayer);
 
@@ -86,6 +87,7 @@ public class Play extends AppCompatActivity {
 
         seek = getIntent().getLongExtra("seek", 0);
         movie = getIntent().getStringExtra("movie");
+        moviedata = (Movie) getIntent().getSerializableExtra("moviedata");
 
         Log.d("LOG","\n\n\n\n\n\n\n\n\n\n\n\n\n"+seek + " --- " + movie);
         play(Filmes.url_final);
@@ -107,7 +109,18 @@ public class Play extends AppCompatActivity {
             } else {
                 videoSource = new ExtractorMediaSource(videoUri, dataSourceFactory, extractorsFactory, null, null);
             }
-            loopingSource = new LoopingMediaSource(videoSource);
+
+            if(moviedata != null && !moviedata.getSubtitleLink().equalsIgnoreCase("")) {
+                Format textFormat = Format.createTextSampleFormat(null, MimeTypes.APPLICATION_SUBRIP,
+                        null, Format.NO_VALUE, Format.NO_VALUE, "en", null);
+                MediaSource textMediaSource = new SingleSampleMediaSource(Uri.parse(moviedata.getSubtitleLink()), dataSourceFactory,
+                        textFormat, C.TIME_UNSET);
+                MediaSource mediaSourceWithText = new MergingMediaSource(videoSource, textMediaSource);
+                Log.d("LEGENDA", "LEGENDA CARREGADA: " + moviedata.getSubtitleLink());
+                loopingSource = new LoopingMediaSource(mediaSourceWithText);
+            } else {
+                loopingSource = new LoopingMediaSource(videoSource);
+            }
             player.prepare(loopingSource);
             player.seekTo(seek);
             player.addListener(new ExoPlayer.EventListener() {

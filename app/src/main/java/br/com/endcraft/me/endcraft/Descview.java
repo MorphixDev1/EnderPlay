@@ -56,7 +56,7 @@ public class Descview extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Filmes.openVideo(movie.getLink(), seek, movie.getNome(), activity);
+                Filmes.openVideo(movie.getLink(), seek, movie.getNome(), activity, movie);
             }
         };
     }
