@@ -2,6 +2,7 @@ package br.com.endcraft.me.endcraft;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.GridView;
 
 import org.apache.commons.io.IOUtils;
@@ -49,6 +50,21 @@ public class LoadMovies extends AsyncTask<String, Void, List<Movie>> {
                     JSONObject desc = data.getJSONObject("desc");
                     m.setDesc(desc.has("0") ? desc.getString("0") : "Filme sem descrição :(");
                 }
+                List<String> listUrls = null;
+                if(data.has("urls")){
+                    listUrls = new ArrayList<>();
+                    JSONObject urls = data.getJSONObject("urls");
+
+                    listUrls.add(urls.getJSONArray("high").getString(0));
+                    if(!urls.getJSONArray("medium").getString(0).trim().equalsIgnoreCase("")) {
+                        listUrls.add(urls.getJSONArray("medium").getString(0));
+                    }
+                    if(!urls.getJSONArray("low").getString(0).trim().equalsIgnoreCase("")){
+                        listUrls.add(urls.getJSONArray("low").getString(0));
+                    }
+                }
+                if(listUrls!=null)
+                    m.setUrls(listUrls);
                 m.setBannerLink(data.get("banner") instanceof JSONObject ? data.getJSONObject("banner").getString("0") : "");
                 m.setIdioma( idioma.has("0") ?  idioma.getString("0") : "Português" );
                 m.setLink(data.getJSONObject("url").getString("0"));

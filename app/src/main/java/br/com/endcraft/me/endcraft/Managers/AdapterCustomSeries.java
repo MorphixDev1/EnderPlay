@@ -14,6 +14,7 @@ import java.util.List;
 import br.com.endcraft.me.endcraft.Filmes;
 import br.com.endcraft.me.endcraft.R;
 import br.com.endcraft.me.endcraft.ShowSerie;
+import br.com.endcraft.me.endcraft.net.ThreadImage;
 
 /**
  * Created by JonasXPX on 21.jul.2017.
@@ -58,7 +59,7 @@ public class AdapterCustomSeries extends BaseAdapter {
             }
         });
         nome.setText(series.getName());
-        new DownloadImage(img, activity).execute(series.getUrlImg());
+        new Thread(new ThreadImage(series.getUrlImg(), img, activity)).start();
         Log.d("DEG", "loaded" + position);
         return view;
     }

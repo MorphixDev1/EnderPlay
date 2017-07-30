@@ -1,7 +1,10 @@
 package br.com.endcraft.me.endcraft.Managers;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Build;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,6 +17,7 @@ import java.util.List;
 import br.com.endcraft.me.endcraft.Filmes;
 import br.com.endcraft.me.endcraft.Movie;
 import br.com.endcraft.me.endcraft.R;
+import br.com.endcraft.me.endcraft.net.ThreadImage;
 
 /**
  * Created by JonasXPX on 18.jul.2017.
@@ -64,7 +68,7 @@ public class AdapterCustomFilmes extends BaseAdapter {
         final Movie movie = filmes.get(position);
         TextView nome = (TextView) view.findViewById(R.id.filme_nome);
        /* TextView desc = (TextView) view.findViewById(R.id.filme_desc);*/
-        ImageView img = (ImageView) view.findViewById(R.id.item_imagem);
+        final ImageView img = (ImageView) view.findViewById(R.id.item_imagem);
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,11 +78,9 @@ public class AdapterCustomFilmes extends BaseAdapter {
         });
         if(movie != null) {
             nome.setText(movie.getNome());
-            /*desc.setText(movie.getIdioma());*/
-            new DownloadImage(img, activity).execute(movie.getImgLink());
-            //img.setImageURI(Uri.parse(movie.getImgLink()));
+            new Thread(new ThreadImage(movie.getImgLink(), img, activity)).start();
         } else
-            Log.d("movie is null", "movie is null");
+            Log.d("DEBUG", "movie is null");
         return view;
     }
 }

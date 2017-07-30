@@ -1,9 +1,8 @@
-package br.com.endcraft.me.endcraft.Managers;
+package br.com.endcraft.me.endcraft.net;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -16,15 +15,18 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Created by JonasXPX on 18.jul.2017.
+ * Created by JonasXPX on 30.jul.2017.
  */
 
-public class DownloadImage  extends AsyncTask<String, Void, Bitmap> {
-    private final Activity activity;
-    private ImageView img;
-    private MessageDigest md;
+public class ThreadImage implements Runnable {
 
-    public DownloadImage(ImageView img, Activity activity) {
+    private MessageDigest md;
+    private String url;
+    private ImageView img;
+    private final Activity activity;
+
+    public ThreadImage(String url, ImageView img, Activity activity) {
+        this.url = url;
         this.img = img;
         this.activity = activity;
         try {
@@ -35,15 +37,15 @@ public class DownloadImage  extends AsyncTask<String, Void, Bitmap> {
     }
 
     @Override
-    protected Bitmap doInBackground(String... params) {
-        String url = params[0];
+    public void run() {
         boolean mat = url.matches("(^http|^https).*");
         String hash = toHex(md.digest(url.getBytes()));
         File folder = new File(activity.getCacheDir(), "img/");
         folder.mkdirs();
         File file = new File(activity.getCacheDir(), "img/" + hash + ".png");
         if(file.exists()){
-            return BitmapFactory.decodeFile(file.getAbsolutePath());
+            done(BitmapFactory.decodeFile(file.getAbsolutePath()));
+            return;
         }
         if(!mat){
             Log.d("WARN", "INVALID URL");
@@ -56,18 +58,23 @@ public class DownloadImage  extends AsyncTask<String, Void, Bitmap> {
             InputStream in = new URL("https://ender.tk/filme/resize.php?URL=" + url.replaceFirst("http:", "https:")).openStream();
             bm = BitmapFactory.decodeStream(in);
             bm.compress(Bitmap.CompressFormat.PNG, 100, out = (new FileOutputStream(new File(activity.getCacheDir(), "img/" + hash + ".png"))));
-            Log.d("INFO", "Downloaded image: " + url);
         }catch (Exception e){
             e.printStackTrace();
         } finally {
-           try{if(out!=null)out.close();}catch (IOException e){};
+            try{if(out!=null)out.close();}catch (IOException e){};
         }
-        return bm;
+        done(bm);
     }
 
-    @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        img.setImageBitmap(bitmap);
+
+    public void done(final Bitmap bitmap){
+        Log.d("DONE", "Image downloaded");
+        img.post(new Runnable() {
+            @Override
+            public void run() {
+                img.setImageBitmap(bitmap);
+            }
+        });
     }
 
     private String toHex(byte[] byteData){

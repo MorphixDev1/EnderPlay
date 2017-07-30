@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:background="@drawable/capa_enderplay"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:alpha="0.9" />
     <ImageView
         android:id="@+id/play_button"
@@ -38,15 +38,35 @@
         android:textColor="@color/white"/>
     <TextView
         android:id="@+id/movie_name"
-        android:layout_width="220dp"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:textColor="@color/white"
-        android:textSize="15dp"
+        android:gravity="right"
+        android:textColor="#e2ffffff"
+        android:textSize="12dp"
         android:layout_marginTop="200dp"
-        android:layout_marginRight="20dp"
-        android:textAlignment="center"
+        android:layout_marginRight="5dp"
         android:text="Nome do Filme"/>
+    <TextView
+        android:id="@+id/releacedate"
+        android:textColor="#e2ffffff"
+        android:layout_width="120dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="215dp"
+        android:alpha="0.5"
+        />
+    <TextView
+        android:id="@+id/diretor"
+        android:text="diretor"
+        android:textColor="#e2ffffff"
+        android:layout_width="200dp"
+        android:layout_height="20dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="215dp"
+        android:gravity="right"
+        android:layout_gravity="right"
+        android:alpha="0.5"/>
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -61,6 +81,9 @@
             android:fontFamily="sans-serif"
             android:padding="10dp"
             android:textSize="15dp"
-            android:text="Teste de descrição....."/>
+            android:text="Teste de descrição....."
+            android:layout_row="0"
+            android:layout_column="0" />
+
     </GridLayout>
 </FrameLayout>
