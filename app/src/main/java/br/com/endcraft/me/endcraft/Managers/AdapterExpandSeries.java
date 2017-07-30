@@ -20,10 +20,12 @@ public class AdapterExpandSeries extends BaseExpandableListAdapter {
 
     private Series series;
     private Context context;
+    private DataSerie dataSerie;
 
     public AdapterExpandSeries(Series series, Context context) {
         this.series = series;
         this.context = context;
+        this.dataSerie = new DataSerie(series, (Activity) context);
     }
 
     @Override
@@ -80,20 +82,22 @@ public class AdapterExpandSeries extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View view, ViewGroup parent) {
-        final Series.Episodio temporada = (Series.Episodio) getChild(groupPosition, childPosition);
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View view, ViewGroup parent) {
+        final Series.Episodio episodio = (Series.Episodio) getChild(groupPosition, childPosition);
         if(view == null){
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = layoutInflater.inflate(R.layout.list_item, null);
         }
         TextView textView = (TextView) view.findViewById(R.id.episodio);
-        textView.setText(temporada.getName());
+
+        long dataView = dataSerie.getVisualized(groupPosition, childPosition);
+        textView.setText(episodio.getName() + (dataView != 0 ? " \u25CF" : ""));
 
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DataMovie dataMovie = new DataMovie(series.getName() + "_" + temporada.getEpNumber(), (Activity) context);
-                Filmes.openVideo(temporada.getUrl(), dataMovie.getSeekPosition(), series.getName() + "_" + temporada.getEpNumber(), null, null);
+                DataMovie dataMovie = new DataMovie(series.getName() + "_" + episodio.getEpNumber(), (Activity) context);
+                Filmes.openVideo(episodio.getUrl(), dataMovie.getSeekPosition(), series.getName() + "_" + groupPosition + "-" + childPosition, null, null, series);
             }
         });
 

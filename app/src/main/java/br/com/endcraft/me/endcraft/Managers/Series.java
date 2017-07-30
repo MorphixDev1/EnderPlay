@@ -1,5 +1,6 @@
 package br.com.endcraft.me.endcraft.Managers;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -7,7 +8,7 @@ import java.util.TreeMap;
  * Created by JonasXPX on 19.jul.2017.
  */
 
-public class Series {
+public class Series implements Serializable{
 
     private String name;
     private TreeMap<Integer, List<Episodio>> temporadas = new TreeMap<>();
@@ -41,7 +42,7 @@ public class Series {
         this.temporadas = serie;
     }
 
-    public static final class Episodio {
+    public static final class Episodio implements Serializable{
         private String name;
         private int epNumber;
         private String url;

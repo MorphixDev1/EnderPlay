@@ -43,6 +43,8 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
 
 import br.com.endcraft.me.endcraft.Managers.DataMovie;
+import br.com.endcraft.me.endcraft.Managers.DataSerie;
+import br.com.endcraft.me.endcraft.Managers.Series;
 
 /**
  * Created by JonasXPX on 18.jul.2017.
@@ -58,6 +60,7 @@ public class Play extends AppCompatActivity {
     private String movie;
     private final BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
     private Movie moviedata;
+    private Series seriesdata;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,6 +91,8 @@ public class Play extends AppCompatActivity {
         seek = getIntent().getLongExtra("seek", 0);
         movie = getIntent().getStringExtra("movie");
         moviedata = (Movie) getIntent().getSerializableExtra("moviedata");
+        seriesdata = (Series) getIntent().getSerializableExtra("seriesdata");
+
 
         Log.d("LOG","\n\n\n\n\n\n\n\n\n\n\n\n\n"+seek + " --- " + movie);
         play(Filmes.url_final);
@@ -202,6 +207,11 @@ public class Play extends AppCompatActivity {
         super.onDestroy();
         DataMovie dataMovie = new DataMovie(movie, instance);
         dataMovie.saveSeek(player.getCurrentPosition() > 5000 ? player.getCurrentPosition() -5000: player.getCurrentPosition());
+        if(seriesdata != null) {
+            DataSerie dataSerie = new DataSerie(seriesdata, instance);
+            String[] data = movie.split("(_|-)");
+            dataSerie.setVisualized(Integer.parseInt(data[1]), Integer.parseInt(data[2]), player.getCurrentPosition());
+        }
         Log.v(TAG, "Destruido: " + player.getCurrentPosition());
         player.release();
     }

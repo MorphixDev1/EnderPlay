@@ -49,6 +49,7 @@ import br.com.endcraft.me.endcraft.Managers.AdManager;
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomSeries;
 import br.com.endcraft.me.endcraft.Managers.CheckUpdate;
+import br.com.endcraft.me.endcraft.Managers.DataSerie;
 import br.com.endcraft.me.endcraft.Managers.Series;
 
 /**
@@ -162,7 +163,8 @@ public class Filmes extends AppCompatActivity {
         descView.putExtra("movie", movie);
         instance.startActivity(descView);
     }
-    public static void openVideo(String url, final long seek, final String name, Activity activity1, @Nullable final Movie movie){
+
+    public static void openVideo(String url, final long seek, final String name, Activity activity1, @Nullable final Movie movie, @Nullable final Series series){
         if(activity1 == null)
             activity1 = instance;
         final Activity activity = activity1;
@@ -179,6 +181,9 @@ public class Filmes extends AppCompatActivity {
                     if(movie != null){
                         videoView.putExtra("moviedata", movie);
                     }
+                    if(series != null){
+                        videoView.putExtra("seriesdata", series);
+                    }
                     activity.startActivity(videoView);
                     mInterstitialAd.loadAd(new AdRequest.Builder()
                             .setBirthday(new GregorianCalendar(1990,1,1).getTime())
@@ -193,6 +198,9 @@ public class Filmes extends AppCompatActivity {
             videoView.putExtra("movie", name);
             if(movie != null){
                 videoView.putExtra("moviedata", movie);
+            }
+            if(series != null){
+                videoView.putExtra("seriesdata", series);
             }
             activity.startActivity(videoView);
         }
