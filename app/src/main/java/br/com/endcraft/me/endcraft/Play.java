@@ -35,6 +35,7 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
@@ -85,7 +86,6 @@ public class Play extends AppCompatActivity {
 
         simpleExoPlayerView.setUseController(true);
         simpleExoPlayerView.requestFocus();
-
         simpleExoPlayerView.setPlayer(player);
 
         seek = getIntent().getLongExtra("seek", 0);
@@ -111,6 +111,7 @@ public class Play extends AppCompatActivity {
             MediaSource videoSource;
             if(url.endsWith(".m3u8")){
                 videoSource = new HlsMediaSource(videoUri, dataSourceFactory, null, null);
+
             } else {
                 videoSource = new ExtractorMediaSource(videoUri, dataSourceFactory, extractorsFactory, null, null);
             }
@@ -126,6 +127,9 @@ public class Play extends AppCompatActivity {
             } else {
                 loopingSource = new LoopingMediaSource(videoSource);
             }
+
+
+
             player.prepare(loopingSource);
             player.seekTo(seek);
             player.addListener(new ExoPlayer.EventListener() {

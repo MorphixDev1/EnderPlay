@@ -31,7 +31,7 @@ public enum Categoria {
 
     public static Categoria byName(String name){
         for(Categoria value : Categoria.values()){
-            if(value.getNome().equalsIgnoreCase(name))
+            if(value.getNome().equalsIgnoreCase(name) || value.getNome().contains(name))
                 return value;
         }
         return null;

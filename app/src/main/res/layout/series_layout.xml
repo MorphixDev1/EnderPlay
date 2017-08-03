@@ -9,7 +9,8 @@
         android:layout_gravity="center"
         android:scaleType="fitXY"
         android:id="@+id/serieImage"
-        android:background="@color/gray"/>
+        android:background="@color/gray"
+        android:src="@drawable/gradient_shape"/>
     <ExpandableListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

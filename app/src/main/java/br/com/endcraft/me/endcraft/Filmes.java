@@ -28,8 +28,6 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
@@ -45,11 +43,9 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import br.com.endcraft.me.endcraft.Managers.AdManager;
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomSeries;
 import br.com.endcraft.me.endcraft.Managers.CheckUpdate;
-import br.com.endcraft.me.endcraft.Managers.DataSerie;
 import br.com.endcraft.me.endcraft.Managers.Series;
 
 /**
@@ -68,7 +64,6 @@ public class Filmes extends AppCompatActivity {
     private View loading;
     private DrawerBuilder drawer;
     private static RewardedVideoAd ad;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +105,10 @@ public class Filmes extends AppCompatActivity {
         new LoadMovies(this, list).execute("https://ender.tk/filme/data.php?getmovies=1");
     }
 
+    private void loadOnlineTv(){
+        new LoadTv(this, list).execute("https://ender.tk/filme/data.php?getonlinetv=1");
+    }
+
     private void loadSeries(){
         new LoadSeries(this, list).execute("https://ender.tk/filme/data.php?getseries=1");
     }
@@ -128,6 +127,10 @@ public class Filmes extends AppCompatActivity {
                 .withTextColor(Color.WHITE)
                 .withSelectedColor(getResources().getColor(R.color.selected_color))
                 .withSelectedTextColor(Color.WHITE));
+       /* drawer.addDrawerItems(new SecondaryDrawerItem().withIdentifier(3).withName("Online TV").withIcon(FontAwesome.Icon.faw_film)
+                .withTextColor(Color.WHITE)
+                .withSelectedColor(getResources().getColor(R.color.selected_color))
+                .withSelectedTextColor(Color.WHITE));*/
         drawer.addDrawerItems(sesion);
         for(Categoria categoria : Categoria.values()){
             drawer.addDrawerItems(new SecondaryDrawerItem().withIdentifier(categoria.id).withName(categoria.getNome())
@@ -148,6 +151,9 @@ public class Filmes extends AppCompatActivity {
                     case 2:
                         loadSeries();
                         return false;
+                   /* case 3:
+                        loadOnlineTv();
+                        return false;*/
                 }
                 groupId255(Categoria.byName(((Nameable)drawerItem).getName().getText()));
                 return false;

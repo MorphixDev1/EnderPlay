@@ -44,6 +44,7 @@ public class ThreadImage implements Runnable {
         folder.mkdirs();
         File file = new File(activity.getCacheDir(), "img/" + hash + ".png");
         if(file.exists()){
+            Log.d("WARN", "Image load by cache");
             done(BitmapFactory.decodeFile(file.getAbsolutePath()));
             return;
         }

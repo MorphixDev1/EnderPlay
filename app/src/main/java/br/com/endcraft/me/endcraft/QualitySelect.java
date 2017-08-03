@@ -1,14 +1,11 @@
 package br.com.endcraft.me.endcraft;
 
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
 /**
  * Created by JonasXPX on 30.jul.2017.

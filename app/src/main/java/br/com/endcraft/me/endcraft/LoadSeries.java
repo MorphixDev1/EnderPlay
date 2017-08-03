@@ -29,6 +29,8 @@ public class LoadSeries extends AsyncTask<String, Void, List<Series>> {
 
     private Activity activity;
     private GridView gv;
+    private final static String OVH_URL = "https://storage.bhs1.cloud.ovh.net/v1/AUTH_338f030c60e64960aef70fb593d452f1/ender/";
+    private final static String DEBUG = "LOADSERIES";
 
     public LoadSeries(Activity activity, GridView gv) {
         this.activity = activity;
@@ -58,8 +60,13 @@ public class LoadSeries extends AsyncTask<String, Void, List<Series>> {
                         ep.put(s.getInt("temporada"), episodios = new ArrayList<>());
                     }
                     String link = s.getString("link");
+
+                    if(link.contains(";")){
+                        link = link.split(";")[0];
+                    }
+
                     if(!link.matches("http[:s].*")){
-                        link = "https://storage.bhs1.cloud.ovh.net/v1/AUTH_338f030c60e64960aef70fb593d452f1/ender/" + link;
+                        link = OVH_URL + link;
                     }
                     Series.Episodio e = new Series.Episodio(s.getString("nome"), s.getInt("episodio"), link);
                     Collections.sort(episodios, new Comparator<Series.Episodio>() {
@@ -82,7 +89,7 @@ public class LoadSeries extends AsyncTask<String, Void, List<Series>> {
 
     @Override
     protected void onPostExecute(List<Series> series) {
-        Log.d("D", "SIZE: "+series.size());
+        Log.d(DEBUG, "SIZE: " + series.size());
         AdapterCustomSeries ad = new AdapterCustomSeries(series, this.activity);
         this.gv.setAdapter(ad);
     }

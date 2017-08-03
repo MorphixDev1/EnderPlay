@@ -1,7 +1,6 @@
 package br.com.endcraft.me.endcraft.net;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.TextView;
 
 import org.apache.commons.io.IOUtils;

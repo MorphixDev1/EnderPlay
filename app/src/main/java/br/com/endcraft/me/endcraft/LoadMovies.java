@@ -2,7 +2,6 @@ package br.com.endcraft.me.endcraft;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.GridView;
 
 import org.apache.commons.io.IOUtils;
@@ -65,7 +64,8 @@ public class LoadMovies extends AsyncTask<String, Void, List<Movie>> {
                 }
                 if(listUrls!=null)
                     m.setUrls(listUrls);
-                m.setBannerLink(data.get("banner") instanceof JSONObject ? data.getJSONObject("banner").getString("0") : "");
+                if(data.has("banner") && (data.get("banner") instanceof JSONObject))
+                  m.setBannerLink(data.getJSONObject("banner").getString("0"));
                 m.setIdioma( idioma.has("0") ?  idioma.getString("0") : "Português" );
                 m.setLink(data.getJSONObject("url").getString("0"));
                 m.setSubtitleLink(data.get("subtitles") instanceof JSONObject ? data.getJSONObject("subtitles").getString("0") : "");

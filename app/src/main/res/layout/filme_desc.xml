@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="240dp"
         android:background="@drawable/capa_enderplay"
-        android:scaleType="fitXY"
-        android:alpha="0.9" />
+        android:scaleType="fitXY"/>
     <ImageView
         android:id="@+id/play_button"
         android:layout_width="80dp"

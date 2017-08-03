@@ -1,7 +1,6 @@
 package br.com.endcraft.me.endcraft.Managers;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
