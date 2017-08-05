@@ -1,4 +1,4 @@
-package br.com.endcraft.me.endcraft.Managers;
+package br.com.endcraft.me.endcraft.update;
 
 /**
  * Created by JonasXPX on 20.jul.2017.

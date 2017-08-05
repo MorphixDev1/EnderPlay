@@ -1,4 +1,4 @@
-package br.com.endcraft.me.endcraft.Managers;
+package br.com.endcraft.me.endcraft.serie;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,7 +13,6 @@ import java.util.List;
 
 import br.com.endcraft.me.endcraft.Filmes;
 import br.com.endcraft.me.endcraft.R;
-import br.com.endcraft.me.endcraft.ShowSerie;
 import br.com.endcraft.me.endcraft.net.ThreadImage;
 
 /**

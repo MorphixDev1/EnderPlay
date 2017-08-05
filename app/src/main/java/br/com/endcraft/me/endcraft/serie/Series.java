@@ -1,4 +1,4 @@
-package br.com.endcraft.me.endcraft.Managers;
+package br.com.endcraft.me.endcraft.serie;
 
 import java.io.Serializable;
 import java.util.List;

@@ -1,4 +1,4 @@
-package br.com.endcraft.me.endcraft.Managers;
+package br.com.endcraft.me.endcraft.update;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import br.com.endcraft.me.endcraft.R;
+import br.com.endcraft.me.endcraft.update.Update;
 
 /**
  * Created by JonasXPX on 20.jul.2017.

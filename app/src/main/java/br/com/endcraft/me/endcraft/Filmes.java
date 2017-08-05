@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -44,9 +45,12 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
-import br.com.endcraft.me.endcraft.Managers.AdapterCustomSeries;
-import br.com.endcraft.me.endcraft.Managers.CheckUpdate;
-import br.com.endcraft.me.endcraft.Managers.Series;
+import br.com.endcraft.me.endcraft.serie.AdapterCustomSeries;
+import br.com.endcraft.me.endcraft.update.CheckUpdate;
+import br.com.endcraft.me.endcraft.serie.Series;
+import br.com.endcraft.me.endcraft.carregamento.LoadMovies;
+import br.com.endcraft.me.endcraft.carregamento.LoadSeries;
+import br.com.endcraft.me.endcraft.carregamento.LoadTv;
 
 /**
  * Created by JonasXPX on 18.jul.2017.
@@ -57,7 +61,7 @@ public class Filmes extends AppCompatActivity {
     public static Filmes instance;
     public static String url_final = "";
     public static Series current_serie;
-    private GridView list;
+    public static GridView list;
     private static InterstitialAd mInterstitialAd;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -70,7 +74,9 @@ public class Filmes extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
         setContentView(R.layout.filmes_main);
         instance = this;
 
@@ -92,7 +98,7 @@ public class Filmes extends AppCompatActivity {
 
         loadMovies();
 
-        //loadAd();
+
     }
 
     protected static void loadAd() {

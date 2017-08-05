@@ -1,4 +1,4 @@
-package br.com.endcraft.me.endcraft.Managers;
+package br.com.endcraft.me.endcraft.serie;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

@@ -35,7 +35,6 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
@@ -44,8 +43,8 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
 
 import br.com.endcraft.me.endcraft.Managers.DataMovie;
-import br.com.endcraft.me.endcraft.Managers.DataSerie;
-import br.com.endcraft.me.endcraft.Managers.Series;
+import br.com.endcraft.me.endcraft.serie.DataSerie;
+import br.com.endcraft.me.endcraft.serie.Series;
 
 /**
  * Created by JonasXPX on 18.jul.2017.

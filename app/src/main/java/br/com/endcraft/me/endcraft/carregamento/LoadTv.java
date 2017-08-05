@@ -1,4 +1,4 @@
-package br.com.endcraft.me.endcraft;
+package br.com.endcraft.me.endcraft.carregamento;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomTV;
+import br.com.endcraft.me.endcraft.OnlineTV;
 
 /**
  * Created by JonasXPX on 31.jul.2017.

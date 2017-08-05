@@ -1,6 +1,7 @@
 package br.com.endcraft.me.endcraft;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
@@ -8,15 +9,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.StackView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
 
+import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
+import br.com.endcraft.me.endcraft.Managers.Tools;
 import br.com.endcraft.me.endcraft.net.GetMovieInformation;
 import br.com.endcraft.me.endcraft.net.ThreadImage;
 
@@ -77,6 +85,14 @@ public class Descview extends AppCompatActivity {
         } else {
             Toast.makeText(this, "MOVIE IS NULL", Toast.LENGTH_SHORT).show();
         }
+        GridView gv = (GridView) findViewById(R.id.outros_filmes);
+        Categoria[] c = new Categoria[movie.getCategorias().size()];
+        movie.getCategorias().toArray(c);
+        gv.setAdapter(new AdapterCustomFilmes(Tools.filterByCat(Filmes.list.getAdapter(), movie, c), this));
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
     }
 
     private View.OnClickListener onClick() {
@@ -107,7 +123,7 @@ public class Descview extends AppCompatActivity {
                         public View getView(final int position, View convertView, ViewGroup parent) {
                             View view = activity.getLayoutInflater().inflate(R.layout.quality, parent, false);
                             Button q = (Button) view.findViewById(R.id.quality);
-                            q.setText(position == 0 ? "Padrão" : position == 1 ? "Boa" : "Ruim");
+                            q.setText(position == 0 ? "Padrão" : position == 1 ? "Baixa" : "Ruim");
                             q.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -129,4 +145,5 @@ public class Descview extends AppCompatActivity {
         super.onDestroy();
         infoMovie.cancel(true);
     }
+
 }

@@ -1,4 +1,4 @@
-package br.com.endcraft.me.endcraft;
+package br.com.endcraft.me.endcraft.carregamento;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -13,7 +13,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.endcraft.me.endcraft.Categoria;
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
+import br.com.endcraft.me.endcraft.Movie;
 
 /**
  * Created by JonasXPX on 18.jul.2017.

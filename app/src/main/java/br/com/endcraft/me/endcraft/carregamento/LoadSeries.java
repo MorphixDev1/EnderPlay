@@ -1,4 +1,4 @@
-package br.com.endcraft.me.endcraft;
+package br.com.endcraft.me.endcraft.carregamento;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -17,8 +17,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeMap;
 
-import br.com.endcraft.me.endcraft.Managers.AdapterCustomSeries;
-import br.com.endcraft.me.endcraft.Managers.Series;
+import br.com.endcraft.me.endcraft.serie.AdapterCustomSeries;
+import br.com.endcraft.me.endcraft.serie.Series;
 
 /**
  * Created by JonasXPX on 21.jul.2017.

@@ -1,12 +1,14 @@
-package br.com.endcraft.me.endcraft;
+package br.com.endcraft.me.endcraft.serie;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 
-import br.com.endcraft.me.endcraft.Managers.AdapterExpandSeries;
-import br.com.endcraft.me.endcraft.Managers.Series;
+import br.com.endcraft.me.endcraft.Filmes;
+import br.com.endcraft.me.endcraft.R;
+import br.com.endcraft.me.endcraft.serie.AdapterExpandSeries;
+import br.com.endcraft.me.endcraft.serie.Series;
 import br.com.endcraft.me.endcraft.net.ThreadImage;
 
 /**

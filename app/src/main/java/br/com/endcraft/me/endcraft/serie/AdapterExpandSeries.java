@@ -1,4 +1,4 @@
-package br.com.endcraft.me.endcraft.Managers;
+package br.com.endcraft.me.endcraft.serie;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import br.com.endcraft.me.endcraft.Filmes;
+import br.com.endcraft.me.endcraft.Managers.DataMovie;
 import br.com.endcraft.me.endcraft.R;
 
 /**
