@@ -81,7 +81,7 @@ public class Descview extends AppCompatActivity {
             nome.setText(movie.getNome());
             idioma.setText(movie.getIdioma());
             desc.setText(movie.getDesc());
-            desc.setMovementMethod(new ScrollingMovementMethod());
+            //desc.setMovementMethod(new ScrollingMovementMethod());
         } else {
             Toast.makeText(this, "MOVIE IS NULL", Toast.LENGTH_SHORT).show();
         }

@@ -97,8 +97,8 @@ public class AdapterExpandSeries extends BaseExpandableListAdapter {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DataMovie dataMovie = new DataMovie(series.getName() + "_" + episodio.getEpNumber(), (Activity) context);
-                Filmes.openVideo(episodio.getUrl(), dataMovie.getSeekPosition(), series.getName() + "_" + groupPosition + "-" + childPosition, null, null, series);
+                DataSerie dataSerie = new DataSerie(series, (Activity) context);
+                Filmes.openVideo(episodio.getUrl(), dataSerie.getVisualized(groupPosition, childPosition), series.getName() + "_" + groupPosition + "-" + childPosition, null, null, series);
             }
         });
 

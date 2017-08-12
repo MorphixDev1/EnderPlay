@@ -72,7 +72,6 @@ public class Play extends AppCompatActivity {
         setContentView(R.layout.play);
         instance = this;
 
-
         Handler mainHandler = new Handler();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
         DefaultTrackSelector trackSelector = new DefaultTrackSelector( videoTrackSelectionFactory);
@@ -145,14 +144,13 @@ public class Play extends AppCompatActivity {
 
                 @Override
                 public void onLoadingChanged(boolean isLoading) {
-                    Log.v(TAG,"Listener-onLoadingChanged...");
+                    Log.v(TAG,"Listener-onLoadingChanged... " + isLoading);
                     hideSystemUI();
                 }
 
                 @Override
                 public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                     Log.v(TAG,"Listener-onPlayerStateChanged...");
-
                 }
 
                 @Override
@@ -215,7 +213,7 @@ public class Play extends AppCompatActivity {
             String[] data = movie.split("(_|-)");
             dataSerie.setVisualized(Integer.parseInt(data[1]), Integer.parseInt(data[2]), player.getCurrentPosition());
         }
-        Log.v(TAG, "Destruido: " + player.getCurrentPosition());
+        Log.d(TAG, "Destruido: " + player.getCurrentPosition());
         player.release();
     }
 
