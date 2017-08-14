@@ -2,6 +2,7 @@ package br.com.endcraft.me.endcraft.carregamento;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.view.View;
 import android.widget.GridView;
 
 import org.apache.commons.io.IOUtils;
@@ -14,8 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.endcraft.me.endcraft.Categoria;
+import br.com.endcraft.me.endcraft.Filmes;
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
 import br.com.endcraft.me.endcraft.Movie;
+import br.com.endcraft.me.endcraft.R;
 
 /**
  * Created by JonasXPX on 18.jul.2017.
@@ -93,5 +96,6 @@ public class LoadMovies extends AsyncTask<String, Void, List<Movie>> {
     protected void onPostExecute(List<Movie> movies) {
         AdapterCustomFilmes adapterCustomFilmes = new AdapterCustomFilmes(movies, activity);
         view.setAdapter(adapterCustomFilmes);
+        Filmes.loading.setVisibility(View.GONE);
     }
 }

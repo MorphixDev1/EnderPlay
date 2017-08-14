@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -24,6 +25,8 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
@@ -65,7 +68,7 @@ public class Filmes extends AppCompatActivity {
     private static InterstitialAd mInterstitialAd;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
-    private View loading;
+    public static RelativeLayout loading;
     private DrawerBuilder drawer;
     private static RewardedVideoAd ad;
 
@@ -79,6 +82,7 @@ public class Filmes extends AppCompatActivity {
         }
         setContentView(R.layout.filmes_main);
         instance = this;
+        loading = (RelativeLayout) findViewById(R.id.loading_icon);
 
         setSupportActionBar((Toolbar) findViewById(R.id.actionbar));
 
@@ -97,6 +101,7 @@ public class Filmes extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPref.edit();
 
         loadMovies();
+        new CheckUpdate(this).execute(BuildConfig.VERSION_NAME);
 
 
     }
@@ -108,6 +113,7 @@ public class Filmes extends AppCompatActivity {
     }
 
     private void loadMovies(){
+        loading.setVisibility(View.VISIBLE);
         new LoadMovies(this, list).execute("https://ender.tk/filme/data.php?getmovies=1");
     }
 
@@ -116,6 +122,7 @@ public class Filmes extends AppCompatActivity {
     }
 
     private void loadSeries(){
+        loading.setVisibility(View.VISIBLE);
         new LoadSeries(this, list).execute("https://ender.tk/filme/data.php?getseries=1");
     }
 
@@ -230,6 +237,7 @@ public class Filmes extends AppCompatActivity {
 
         menu.add(101, 0, 0, R.string.buscar_at);
         menu.add(100, 0, 0, R.string.sobre);
+        menu.add(102, 0, 0, R.string.settings);
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -254,7 +262,6 @@ public class Filmes extends AppCompatActivity {
                         adapter = (AdapterCustomSeries) list.getAdapter();
 
                     }
-
                     list.setAdapter(adapter);
                 }catch (Exception e){
                     Toast.makeText(instance, "Aguarde", Toast.LENGTH_SHORT).show();
@@ -277,6 +284,9 @@ public class Filmes extends AppCompatActivity {
             case 101:
                 groupId101(item);
                 break;
+            case 102:
+                startActivity(new Intent(this ,Settings.class));
+                break;
 
         }
         return super.onOptionsItemSelected(item);
@@ -284,7 +294,7 @@ public class Filmes extends AppCompatActivity {
 
     private boolean groupId100(MenuItem item) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setMessage(getString(R.string.sobre_msg) + BuildConfig.VERSION_NAME).setTitle("Sobre");
+        dialog.setMessage(getString(R.string.sobre_msg) + " " + BuildConfig.VERSION_NAME).setTitle("Sobre");
         dialog.create().show();
         return false;
     }
@@ -293,7 +303,6 @@ public class Filmes extends AppCompatActivity {
         new CheckUpdate(this).execute(BuildConfig.VERSION_NAME);
         return false;
     }
-
 
     private boolean groupId255(Categoria item){
         if(item == null)

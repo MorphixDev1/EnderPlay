@@ -1,15 +1,24 @@
 package br.com.endcraft.me.endcraft;
 
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.accessibility.CaptioningManager;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.exoplayer2.C;
@@ -31,11 +40,13 @@ import com.google.android.exoplayer2.source.MergingMediaSource;
 import com.google.android.exoplayer2.source.SingleSampleMediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
+import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
@@ -43,8 +54,11 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
 
 import br.com.endcraft.me.endcraft.Managers.DataMovie;
+import br.com.endcraft.me.endcraft.Managers.UserSetings;
 import br.com.endcraft.me.endcraft.serie.DataSerie;
 import br.com.endcraft.me.endcraft.serie.Series;
+
+import static android.util.TypedValue.COMPLEX_UNIT_SP;
 
 /**
  * Created by JonasXPX on 18.jul.2017.
@@ -58,9 +72,11 @@ public class Play extends AppCompatActivity {
     private Play instance;
     private long seek;
     private String movie;
+    private TextView movie_title;
     private final BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
     private Movie moviedata;
     private Series seriesdata;
+    private UserSetings settings;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,8 +84,11 @@ public class Play extends AppCompatActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
+        settings = new UserSetings();
         setContentView(R.layout.play);
+        View view = this.getLayoutInflater().inflate(R.layout.movie_title, null, false);
+        this.addContentView(view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        movie_title = (TextView) findViewById(R.id.movie_title);
         instance = this;
 
         Handler mainHandler = new Handler();
@@ -81,7 +100,6 @@ public class Play extends AppCompatActivity {
 
         simpleExoPlayerView = new SimpleExoPlayerView(this);
         simpleExoPlayerView = (SimpleExoPlayerView) findViewById(R.id.exoPlayer);
-
         simpleExoPlayerView.setUseController(true);
         simpleExoPlayerView.requestFocus();
         simpleExoPlayerView.setPlayer(player);
@@ -91,7 +109,12 @@ public class Play extends AppCompatActivity {
         moviedata = (Movie) getIntent().getSerializableExtra("moviedata");
         seriesdata = (Series) getIntent().getSerializableExtra("seriesdata");
 
-
+        movie_title.setText(moviedata != null ? moviedata.getNome() : seriesdata.getName());
+        hiddleTitle();
+        SubtitleView subtitleView = simpleExoPlayerView.getSubtitleView();
+        subtitleView.setStyle(new CaptionStyleCompat(settings.getSubtitle_foregroundColor(), settings.getSubtitle_backgroundColor(),
+                settings.getSubtitle_windowColor(), CaptionStyleCompat.EDGE_TYPE_DROP_SHADOW, settings.getSubtitle_edgeColor(), null));
+        subtitleView.setFixedTextSize(COMPLEX_UNIT_SP, settings.getSubtitle_fontSize());
         Log.d("LOG","\n\n\n\n\n\n\n\n\n\n\n\n\n"+seek + " --- " + movie);
         play(Filmes.url_final);
 
@@ -130,7 +153,9 @@ public class Play extends AppCompatActivity {
 
             player.prepare(loopingSource);
             player.seekTo(seek);
+
             player.addListener(new ExoPlayer.EventListener() {
+
                 @Override
                 public void onTimelineChanged(Timeline timeline, Object manifest) {
                     Log.v(TAG,"Listener-onTimelineChanged... TO: " + seek);
@@ -156,7 +181,7 @@ public class Play extends AppCompatActivity {
                 @Override
                 public void onPlayerError(ExoPlaybackException error) {
                     if(error.getMessage() == null){
-                            Toast.makeText(instance, "Erro ao executar o filme", Toast.LENGTH_LONG);
+                            Toast.makeText(instance, "Erro ao executar", Toast.LENGTH_LONG).show();
                             instance.finish();
                         return;
                     }
@@ -164,7 +189,6 @@ public class Play extends AppCompatActivity {
                     player.stop();
                     player.prepare(loopingSource);
                     player.setPlayWhenReady(true);
-
                 }
 
                 @Override
@@ -243,4 +267,18 @@ public class Play extends AppCompatActivity {
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
+
+    private void hiddleTitle(){
+
+        movie_title.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(!movie_title.isShown()){
+                    return;
+                }
+                movie_title.setVisibility(View.INVISIBLE);
+            }
+        }, 3000);
+    }
+
 }

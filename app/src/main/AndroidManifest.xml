@@ -37,6 +37,9 @@
         <activity android:name=".serie.ShowSerie"
             android:screenOrientation="sensorPortrait">
         </activity>
+        <activity android:name=".Settings">
+
+        </activity>
     </application>
 
 </manifest>

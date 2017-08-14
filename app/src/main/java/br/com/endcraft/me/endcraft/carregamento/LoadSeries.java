@@ -3,6 +3,7 @@ package br.com.endcraft.me.endcraft.carregamento;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.widget.GridView;
 
 import org.apache.commons.io.IOUtils;
@@ -17,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeMap;
 
+import br.com.endcraft.me.endcraft.Filmes;
 import br.com.endcraft.me.endcraft.serie.AdapterCustomSeries;
 import br.com.endcraft.me.endcraft.serie.Series;
 
@@ -92,5 +94,6 @@ public class LoadSeries extends AsyncTask<String, Void, List<Series>> {
         Log.d(DEBUG, "SIZE: " + series.size());
         AdapterCustomSeries ad = new AdapterCustomSeries(series, this.activity);
         this.gv.setAdapter(ad);
+        Filmes.loading.setVisibility(View.GONE);
     }
 }

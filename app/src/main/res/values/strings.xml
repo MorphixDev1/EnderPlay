@@ -35,4 +35,7 @@
     <string name="selection_default">Default</string>
     <string name="enable_random_adaptation">Enable random adaptation</string>
     <string name="loading">Carregando</string>
+    <string name="foregroudcolor">foregroudcolor</string>
+    <string name="settings">Configurações</string>
+    <string name="desc_font_size">Dependendo do tamanha da sua tela, o tamanho da fonte pode variar.</string>
 </resources>

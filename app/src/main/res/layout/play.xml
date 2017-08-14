@@ -18,4 +18,5 @@
         app:controller_layout_id="@layout/custom_layout_player"
         app:resize_mode="fill">
     </com.google.android.exoplayer2.ui.SimpleExoPlayerView>
+
 </RelativeLayout>
