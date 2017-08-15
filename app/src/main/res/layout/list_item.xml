@@ -4,9 +4,9 @@
     android:layout_height="match_parent">
     <TextView
         android:id="@+id/episodio"
-        android:padding="12dp"
+        android:padding="10dp"
         android:text="@string/title_activity_test"
-        android:background="#121525"
+        android:background="#19504e"
         android:textColor="@android:color/background_light"
         android:textSize="15dp"
         android:layout_width="match_parent"

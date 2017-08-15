@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,7 +23,6 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -48,12 +45,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
-import br.com.endcraft.me.endcraft.serie.AdapterCustomSeries;
-import br.com.endcraft.me.endcraft.update.CheckUpdate;
-import br.com.endcraft.me.endcraft.serie.Series;
 import br.com.endcraft.me.endcraft.carregamento.LoadMovies;
 import br.com.endcraft.me.endcraft.carregamento.LoadSeries;
-import br.com.endcraft.me.endcraft.carregamento.LoadTv;
+import br.com.endcraft.me.endcraft.serie.AdapterCustomSeries;
+import br.com.endcraft.me.endcraft.serie.Series;
+import br.com.endcraft.me.endcraft.update.CheckUpdate;
 
 /**
  * Created by JonasXPX on 18.jul.2017.
@@ -89,11 +85,7 @@ public class Filmes extends AppCompatActivity {
         createDrawer();
 
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-6681846718813637/7457083506");
-        mInterstitialAd.loadAd(new AdRequest.Builder()
-                .setBirthday(new GregorianCalendar(1990,1,1).getTime())
-                .addKeyword("trailer")
-                .build());
+        mInterstitialAd.setAdUnitId(getString(R.string.ad_unit_id));
         mInterstitialAd.setImmersiveMode(true);
 
         list = (GridView) findViewById(R.id.itens);
@@ -106,24 +98,14 @@ public class Filmes extends AppCompatActivity {
 
     }
 
-    protected static void loadAd() {
-        ad.loadAd("ca-app-pub-6681846718813637/2042677168", new AdRequest.Builder().build());
-        ad.setImmersiveMode(true);
-        Log.d("AD", "AD loaded ");
-    }
-
     private void loadMovies(){
         loading.setVisibility(View.VISIBLE);
-        new LoadMovies(this, list).execute("https://ender.tk/filme/data.php?getmovies=1");
-    }
-
-    private void loadOnlineTv(){
-        new LoadTv(this, list).execute("https://ender.tk/filme/data.php?getonlinetv=1");
+        new LoadMovies(this, list).execute(getString(R.string.movie_link));
     }
 
     private void loadSeries(){
         loading.setVisibility(View.VISIBLE);
-        new LoadSeries(this, list).execute("https://ender.tk/filme/data.php?getseries=1");
+        new LoadSeries(this, list).execute(getString(R.string.series_link));
     }
 
     private void createDrawer() {
@@ -140,10 +122,6 @@ public class Filmes extends AppCompatActivity {
                 .withTextColor(Color.WHITE)
                 .withSelectedColor(getResources().getColor(R.color.selected_color))
                 .withSelectedTextColor(Color.WHITE));
-       /* drawer.addDrawerItems(new SecondaryDrawerItem().withIdentifier(3).withName("Online TV").withIcon(FontAwesome.Icon.faw_film)
-                .withTextColor(Color.WHITE)
-                .withSelectedColor(getResources().getColor(R.color.selected_color))
-                .withSelectedTextColor(Color.WHITE));*/
         drawer.addDrawerItems(sesion);
         for(Categoria categoria : Categoria.values()){
             drawer.addDrawerItems(new SecondaryDrawerItem().withIdentifier(categoria.id).withName(categoria.getNome())
@@ -232,7 +210,6 @@ public class Filmes extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.mymenu, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);
 
-        final Vibrator vibrator = (Vibrator) instance.getSystemService(VIBRATOR_SERVICE);
         SearchView search = (SearchView) MenuItemCompat.getActionView(menuItem);
 
         menu.add(101, 0, 0, R.string.buscar_at);
@@ -317,7 +294,7 @@ public class Filmes extends AppCompatActivity {
             adapter.setFilmes(movies);
             list.setAdapter(adapter);
         }catch (Exception e){
-            Toast.makeText(instance, "Aguarde", Toast.LENGTH_SHORT).show();
+            Toast.makeText(instance, "Não foi possível executar", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return false;

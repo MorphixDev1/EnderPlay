@@ -38,4 +38,8 @@
     <string name="foregroudcolor">foregroudcolor</string>
     <string name="settings">Configurações</string>
     <string name="desc_font_size">Dependendo do tamanha da sua tela, o tamanho da fonte pode variar.</string>
+    <string name="movie_link">https://ender.tk/filme/data.php?getmovies=1</string>
+    <string name="tv_link">https://ender.tk/filme/data.php?getonlinetv=1</string>
+    <string name="series_link">https://ender.tk/filme/data.php?getseries=1</string>
+    <string name="ad_unit_id">ca-app-pub-6681846718813637/7457083506</string>
 </resources>

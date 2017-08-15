@@ -69,8 +69,11 @@ public class LoadMovies extends AsyncTask<String, Void, List<Movie>> {
                 }
                 if(listUrls!=null)
                     m.setUrls(listUrls);
-                if(data.has("banner") && (data.get("banner") instanceof JSONObject))
-                  m.setBannerLink(data.getJSONObject("banner").getString("0"));
+                if(data.has("banner") && (data.get("banner") instanceof JSONObject)) {
+                    if(data.getJSONObject("banner").has("0"))
+                     m.setBannerLink(data.getJSONObject("banner").getString("0"));
+                }
+
                 m.setIdioma( idioma.has("0") ?  idioma.getString("0") : "Português" );
                 m.setLink(data.getJSONObject("url").getString("0"));
                 m.setSubtitleLink(data.get("subtitles") instanceof JSONObject ? data.getJSONObject("subtitles").getString("0") : "");

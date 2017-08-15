@@ -1,22 +1,16 @@
 package br.com.endcraft.me.endcraft;
 
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.accessibility.CaptioningManager;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +34,6 @@ import com.google.android.exoplayer2.source.MergingMediaSource;
 import com.google.android.exoplayer2.source.SingleSampleMediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
-import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
@@ -54,7 +47,7 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
 
 import br.com.endcraft.me.endcraft.Managers.DataMovie;
-import br.com.endcraft.me.endcraft.Managers.UserSetings;
+import br.com.endcraft.me.endcraft.Managers.UserSettings;
 import br.com.endcraft.me.endcraft.serie.DataSerie;
 import br.com.endcraft.me.endcraft.serie.Series;
 
@@ -64,6 +57,8 @@ import static android.util.TypedValue.COMPLEX_UNIT_SP;
  * Created by JonasXPX on 18.jul.2017.
  */
 public class Play extends AppCompatActivity {
+
+    private static final String DEBUG = "Play";
 
     private SimpleExoPlayerView simpleExoPlayerView;
     private SimpleExoPlayer player;
@@ -76,7 +71,7 @@ public class Play extends AppCompatActivity {
     private final BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
     private Movie moviedata;
     private Series seriesdata;
-    private UserSetings settings;
+    private UserSettings settings;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +79,7 @@ public class Play extends AppCompatActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        settings = new UserSetings();
+        settings = new UserSettings();
         setContentView(R.layout.play);
         View view = this.getLayoutInflater().inflate(R.layout.movie_title, null, false);
         this.addContentView(view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -98,33 +93,34 @@ public class Play extends AppCompatActivity {
 
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
 
+        //Layout request
         simpleExoPlayerView = new SimpleExoPlayerView(this);
         simpleExoPlayerView = (SimpleExoPlayerView) findViewById(R.id.exoPlayer);
         simpleExoPlayerView.setUseController(true);
         simpleExoPlayerView.requestFocus();
         simpleExoPlayerView.setPlayer(player);
 
+        //Seek and data
         seek = getIntent().getLongExtra("seek", 0);
         movie = getIntent().getStringExtra("movie");
         moviedata = (Movie) getIntent().getSerializableExtra("moviedata");
         seriesdata = (Series) getIntent().getSerializableExtra("seriesdata");
 
+        //title [temp]
         movie_title.setText(moviedata != null ? moviedata.getNome() : seriesdata.getName());
         hiddleTitle();
+
+        // Subtitles
         SubtitleView subtitleView = simpleExoPlayerView.getSubtitleView();
-        subtitleView.setStyle(new CaptionStyleCompat(settings.getSubtitle_foregroundColor(), settings.getSubtitle_backgroundColor(),
-                settings.getSubtitle_windowColor(), CaptionStyleCompat.EDGE_TYPE_DROP_SHADOW, settings.getSubtitle_edgeColor(), null));
+        subtitleView.setStyle(settings.getSubtitlesStyle());
         subtitleView.setFixedTextSize(COMPLEX_UNIT_SP, settings.getSubtitle_fontSize());
-        Log.d("LOG","\n\n\n\n\n\n\n\n\n\n\n\n\n"+seek + " --- " + movie);
+
+        Log.d(DEBUG, "Continuando: " + seek + "\nMovie:" + movie);
         play(Filmes.url_final);
 
     }
     public void play(String url){
-
         Uri videoUri = Uri.parse(url.replaceAll(" ", "%20").replaceAll("ó", "%C3%B3"));
-        Log.d("LOG", "TRY TO PLAY: " + videoUri);
-        Log.d("LOG", "ORIGINAL: " + url);
-        Log.d("LOG", "MATCHES: " + url.matches("http[:s].*"));
         try{
             DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();
             DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, "EnderFilmes"), bandwidthMeterA);
@@ -132,24 +128,22 @@ public class Play extends AppCompatActivity {
             MediaSource videoSource;
             if(url.endsWith(".m3u8")){
                 videoSource = new HlsMediaSource(videoUri, dataSourceFactory, null, null);
-
             } else {
                 videoSource = new ExtractorMediaSource(videoUri, dataSourceFactory, extractorsFactory, null, null);
             }
 
+            //subtitles by link
             if(moviedata != null && !moviedata.getSubtitleLink().equalsIgnoreCase("")) {
                 Format textFormat = Format.createTextSampleFormat(null, MimeTypes.APPLICATION_SUBRIP,
                         null, Format.NO_VALUE, Format.NO_VALUE, "en", null);
                 MediaSource textMediaSource = new SingleSampleMediaSource(Uri.parse(moviedata.getSubtitleLink()), dataSourceFactory,
                         textFormat, C.TIME_UNSET);
                 MediaSource mediaSourceWithText = new MergingMediaSource(videoSource, textMediaSource);
-                Log.d("LEGENDA", "LEGENDA CARREGADA: " + moviedata.getSubtitleLink());
+                Log.d(DEBUG, "LEGENDA CARREGADA: " + moviedata.getSubtitleLink());
                 loopingSource = new LoopingMediaSource(mediaSourceWithText);
             } else {
                 loopingSource = new LoopingMediaSource(videoSource);
             }
-
-
 
             player.prepare(loopingSource);
             player.seekTo(seek);
@@ -158,24 +152,23 @@ public class Play extends AppCompatActivity {
 
                 @Override
                 public void onTimelineChanged(Timeline timeline, Object manifest) {
-                    Log.v(TAG,"Listener-onTimelineChanged... TO: " + seek);
+                    Log.v(DEBUG,"Listener-onTimelineChanged... TO: " + seek);
                     player.seekTo(seek);
                 }
 
                 @Override
                 public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                    Log.v(TAG,"Listener-onTracksChanged...");
+                    Log.v(DEBUG,"Listener-onTracksChanged...");
                 }
 
                 @Override
                 public void onLoadingChanged(boolean isLoading) {
-                    Log.v(TAG,"Listener-onLoadingChanged... " + isLoading);
-                    hideSystemUI();
+                    Log.v(DEBUG,"Listener-onLoadingChanged... " + isLoading);
                 }
 
                 @Override
                 public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                    Log.v(TAG,"Listener-onPlayerStateChanged...");
+                    Log.v(DEBUG,"Listener-onPlayerStateChanged...");
                 }
 
                 @Override
@@ -185,7 +178,7 @@ public class Play extends AppCompatActivity {
                             instance.finish();
                         return;
                     }
-                    Log.v(TAG,"Listener-onPlayerError..." + error.getMessage());
+                    Log.v(DEBUG,"Listener-onPlayerError..." + error.getMessage());
                     player.stop();
                     player.prepare(loopingSource);
                     player.setPlayWhenReady(true);
@@ -193,14 +186,11 @@ public class Play extends AppCompatActivity {
 
                 @Override
                 public void onPositionDiscontinuity() {
-                    Log.v(TAG,"Listener-onPositionDiscontinuity...");
-
+                    Log.v(DEBUG,"Listener-onPositionDiscontinuity...");
                 }
 
                 @Override
-                public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
-                }
+                public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {}
             });
 
             player.setPlayWhenReady(true);
@@ -217,14 +207,14 @@ public class Play extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         player.setPlayWhenReady(false);
-        Log.d(TAG, "Player called onStop()");
+        Log.d(DEBUG, "Player called onStop()");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         player.setPlayWhenReady(true);
-        Log.d(TAG, "Player called onRestart()");
+        Log.d(DEBUG, "Player called onRestart()");
     }
 
     @Override
@@ -237,21 +227,8 @@ public class Play extends AppCompatActivity {
             String[] data = movie.split("(_|-)");
             dataSerie.setVisualized(Integer.parseInt(data[1]), Integer.parseInt(data[2]), player.getCurrentPosition());
         }
-        Log.d(TAG, "Destruido: " + player.getCurrentPosition());
+        Log.d(DEBUG, "Destruido: " + player.getCurrentPosition());
         player.release();
-    }
-
-    private void hideSystemUI() {
-        // Set the IMMERSIVE flag.
-        // Set the content to appear under the system bars so that the content
-        // doesn't resize when the system bars hide and show.
-        this.getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     @Override
@@ -269,7 +246,6 @@ public class Play extends AppCompatActivity {
     }
 
     private void hiddleTitle(){
-
         movie_title.postDelayed(new Runnable() {
             @Override
             public void run() {

@@ -64,7 +64,6 @@ public class AdapterCustomFilmes extends BaseAdapter {
         View view = activity.getLayoutInflater().inflate(R.layout.filmes, parent, false);
         final Movie movie = filmes.get(position);
         TextView nome = (TextView) view.findViewById(R.id.filme_nome);
-       /* TextView desc = (TextView) view.findViewById(R.id.filme_desc);*/
         final ImageView img = (ImageView) view.findViewById(R.id.item_imagem);
         img.setOnClickListener(new View.OnClickListener() {
             @Override

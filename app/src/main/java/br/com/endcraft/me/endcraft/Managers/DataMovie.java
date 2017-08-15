@@ -19,17 +19,18 @@ public class DataMovie implements Serializable{
     private SharedPreferences.Editor editor;
     private SharedPreferences pre;
     public static final String PREFS_NAME = "ENDER";
+    private static final String DEBUG = "DATA";
 
     public DataMovie(Movie movie, Activity activity) {
         this.movie = movie.getNome().replaceAll("\\s", "");
         this.activity = activity;
-        Log.d("SEEK", this.movie);
+        Log.d(DEBUG, this.movie);
     }
 
     public DataMovie(String movieName, Activity activity){
         this.movie = movieName.replaceAll("\\s", "");
         this.activity = activity;
-        Log.d("SEEK", this.movie);
+        Log.d(DEBUG, this.movie);
     }
 
     public void saveSeek(long position){

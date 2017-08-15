@@ -10,7 +10,7 @@
         android:text="test"
         android:textColor="#dfdfdf"
         android:textAlignment="center"
-        android:background="#18285c"
+        android:background="@drawable/gradient_eps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

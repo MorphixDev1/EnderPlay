@@ -5,11 +5,11 @@
     android:layout_gravity="top|center">
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="16dp"
+        android:layout_height="20dp"
         android:textSize="14dp"
-        android:gravity="center|top"
+        android:gravity="center"
         android:id="@+id/movie_title"
         android:textColor="@color/white"
-        android:background="#CC000000"/>
+        android:background="#a0000000"/>
 
 </LinearLayout>
