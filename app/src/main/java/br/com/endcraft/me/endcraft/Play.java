@@ -1,17 +1,22 @@
 package br.com.endcraft.me.endcraft;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +50,9 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
+import com.mikepenz.iconics.context.IconicsContextWrapper;
+
+import java.util.HashMap;
 
 import br.com.endcraft.me.endcraft.Managers.DataMovie;
 import br.com.endcraft.me.endcraft.Managers.UserSettings;
@@ -72,6 +80,16 @@ public class Play extends AppCompatActivity {
     private Movie moviedata;
     private Series seriesdata;
     private UserSettings settings;
+    private DefaultTrackSelector trackSelector;
+    private TextView audio_track_selection;
+    private HashMap<String, Boolean> audioTracks;
+    private Dialog dialog_audio_track;
+    private SubtitleView subtitleView;
+    private TextView subtitles_icon;
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(IconicsContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,11 +102,64 @@ public class Play extends AppCompatActivity {
         View view = this.getLayoutInflater().inflate(R.layout.movie_title, null, false);
         this.addContentView(view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         movie_title = (TextView) findViewById(R.id.movie_title);
+        subtitles_icon = (TextView) findViewById(R.id.subtitles);
+        audio_track_selection = (TextView) findViewById(R.id.audio_track_selection);
+        audio_track_selection.setVisibility(View.GONE);
         instance = this;
+        audio_track_selection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(instance);
+                View view_audio_track = instance.getLayoutInflater().inflate(R.layout.audio_track_selection, null);
+                ListView listView = (ListView) view_audio_track.findViewById(R.id.tracks);
+                final String[] itens = new String[audioTracks.size()];
+                audioTracks.keySet().toArray(itens);
+                listView.setAdapter(new BaseAdapter() {
+                    @Override
+                    public int getCount() {
+                        return itens.length;
+                    }
+
+                    @Override
+                    public Object getItem(int position) {
+                        return itens[position];
+                    }
+
+                    @Override
+                    public long getItemId(int position) {
+                        return 0;
+                    }
+
+                    @Override
+                    public View getView(final int position, final View convertView, ViewGroup parent) {
+                        View view = instance.getLayoutInflater().inflate(R.layout.audio_track_selection_itens, parent, false);
+                        final String name = (String) getItem(position);
+                        final TextView trackName = (TextView) view.findViewById(R.id.track_name);
+                        trackName.setEnabled(!audioTracks.get(name));
+                        trackName.setText(name);
+                        trackName.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                trackSelector.setParameters(trackSelector.getParameters().withPreferredAudioLanguage((String) getItem(position)));
+                                if(dialog_audio_track!=null && dialog_audio_track.isShowing()){
+                                    dialog_audio_track.dismiss();
+                                }
+                            }
+                        });
+                        return view;
+                    }
+                });
+                listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                builder.setView(view_audio_track);
+                dialog_audio_track = builder.create();
+
+                dialog_audio_track.show();
+            }
+        });
 
         Handler mainHandler = new Handler();
         TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        DefaultTrackSelector trackSelector = new DefaultTrackSelector( videoTrackSelectionFactory);
+        trackSelector = new DefaultTrackSelector( videoTrackSelectionFactory);
         LoadControl loadControl = new DefaultLoadControl();
 
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
@@ -111,9 +182,10 @@ public class Play extends AppCompatActivity {
         hiddleTitle();
 
         // Subtitles
-        SubtitleView subtitleView = simpleExoPlayerView.getSubtitleView();
+        subtitleView = simpleExoPlayerView.getSubtitleView();
         subtitleView.setStyle(settings.getSubtitlesStyle());
         subtitleView.setFixedTextSize(COMPLEX_UNIT_SP, settings.getSubtitle_fontSize());
+        configureSubtitles();
 
         Log.d(DEBUG, "Continuando: " + seek + "\nMovie:" + movie);
         play(Filmes.url_final);
@@ -158,7 +230,15 @@ public class Play extends AppCompatActivity {
 
                 @Override
                 public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                    Log.v(DEBUG,"Listener-onTracksChanged...");
+                    Log.d(DEBUG,"Listener-onTracksChanged... Lenght = " + trackGroups.length);
+                    audioTracks = new HashMap<>();
+                    for(int x=0;x<trackGroups.length;x++){
+                        if(trackGroups.get(x).getFormat(0).sampleMimeType.contains("audio")){
+                            audioTracks.put(trackGroups.get(x).getFormat(0).language, false);
+                        }
+                    }
+                    if(audioTracks.size() > 1)
+                        audio_track_selection.setVisibility(View.VISIBLE);
                 }
 
                 @Override
@@ -228,6 +308,7 @@ public class Play extends AppCompatActivity {
             dataSerie.setVisualized(Integer.parseInt(data[1]), Integer.parseInt(data[2]), player.getCurrentPosition());
         }
         Log.d(DEBUG, "Destruido: " + player.getCurrentPosition());
+        Filmes.reloadAd();
         player.release();
     }
 
@@ -254,7 +335,22 @@ public class Play extends AppCompatActivity {
                 }
                 movie_title.setVisibility(View.INVISIBLE);
             }
-        }, 3000);
+        }, 5000);
+    }
+
+    private void configureSubtitles(){
+        subtitles_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(subtitles_icon.getAlpha() == 1F){
+                    subtitles_icon.setAlpha(0.5F);
+                    subtitleView.setVisibility(View.GONE);
+                } else {
+                    subtitles_icon.setAlpha(1F);
+                    subtitleView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
 }

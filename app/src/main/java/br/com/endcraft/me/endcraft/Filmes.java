@@ -87,7 +87,7 @@ public class Filmes extends AppCompatActivity {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.ad_unit_id));
         mInterstitialAd.setImmersiveMode(true);
-
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
         list = (GridView) findViewById(R.id.itens);
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -96,6 +96,10 @@ public class Filmes extends AppCompatActivity {
         new CheckUpdate(this).execute(BuildConfig.VERSION_NAME);
 
 
+    }
+
+    public static void reloadAd(){
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
     private void loadMovies(){
