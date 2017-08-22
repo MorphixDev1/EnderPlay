@@ -172,7 +172,7 @@ public class Play extends AppCompatActivity {
         simpleExoPlayerView.setPlayer(player);
 
         //Seek and data
-        seek = getIntent().getLongExtra("seek", 0);
+        seek = getIntent().getLongExtra("seek", 0) < 0 ? 0 : getIntent().getLongExtra("seek", 0);
         movie = getIntent().getStringExtra("movie");
         moviedata = (Movie) getIntent().getSerializableExtra("moviedata");
         seriesdata = (Series) getIntent().getSerializableExtra("seriesdata");
@@ -205,13 +205,13 @@ public class Play extends AppCompatActivity {
             }
 
             //subtitles by link
-            if(moviedata != null && !moviedata.getSubtitleLink().equalsIgnoreCase("")) {
-                Format textFormat = Format.createTextSampleFormat(null, MimeTypes.APPLICATION_SUBRIP,
-                        null, Format.NO_VALUE, Format.NO_VALUE, "en", null);
-                MediaSource textMediaSource = new SingleSampleMediaSource(Uri.parse(moviedata.getSubtitleLink()), dataSourceFactory,
-                        textFormat, C.TIME_UNSET);
+            if((moviedata != null && !moviedata.getSubtitleLink().equalsIgnoreCase("")
+                    || (seriesdata != null  && seriesdata.getCurrent_episodio() != null && !seriesdata.getCurrent_episodio().getSubtitleUrl().equalsIgnoreCase("")))) {
+                String link_sub = moviedata != null && !moviedata.getSubtitleLink().equalsIgnoreCase("") ? moviedata.getSubtitleLink() : seriesdata.getCurrent_episodio().getSubtitleUrl();
+                Format textFormat = Format.createTextSampleFormat(null, MimeTypes.APPLICATION_SUBRIP, null, Format.NO_VALUE, Format.NO_VALUE, "en", null);
+                MediaSource textMediaSource = new SingleSampleMediaSource(Uri.parse(link_sub), dataSourceFactory, textFormat, C.TIME_UNSET);
                 MediaSource mediaSourceWithText = new MergingMediaSource(videoSource, textMediaSource);
-                Log.d(DEBUG, "LEGENDA CARREGADA: " + moviedata.getSubtitleLink());
+                Log.d(DEBUG, "LEGENDA CARREGADA: " + link_sub);
                 loopingSource = new LoopingMediaSource(mediaSourceWithText);
             } else {
                 loopingSource = new LoopingMediaSource(videoSource);

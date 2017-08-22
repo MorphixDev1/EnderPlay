@@ -1,6 +1,5 @@
 package br.com.endcraft.me.endcraft;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;

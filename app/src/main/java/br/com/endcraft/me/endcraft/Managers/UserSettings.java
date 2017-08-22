@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.preference.PreferenceManager;
 
 import com.google.android.exoplayer2.text.CaptionStyleCompat;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 
 import br.com.endcraft.me.endcraft.Filmes;
 
@@ -20,13 +19,13 @@ public class UserSettings {
     private int subtitle_windowColor = Color.TRANSPARENT;
     private int subtitle_CaptionStyleCompat = CaptionStyleCompat.EDGE_TYPE_DROP_SHADOW;
     private int subtitle_edgeColor = Color.BLACK;
-    private int subtitle_fontSize = 12;
+    private int subtitle_fontSize = 20;
 
     public UserSettings() {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(Filmes.instance);
         subtitle_foregroundColor = pref.getInt("subtitle_color", 0);
         subtitle_edgeColor = pref.getInt("subtitle_shadow_color", 0);
-        subtitle_fontSize = Integer.parseInt(pref.getString("subtitle_font_size", "12"));
+        subtitle_fontSize = Integer.parseInt(pref.getString("subtitle_font_size", "20"));
         subtitle_windowColor = pref.getInt("subtitle_window_color", 0);
     }
 

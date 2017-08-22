@@ -10,7 +10,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import br.com.endcraft.me.endcraft.Filmes;
-import br.com.endcraft.me.endcraft.Managers.DataMovie;
 import br.com.endcraft.me.endcraft.R;
 
 /**
@@ -97,6 +96,7 @@ public class AdapterExpandSeries extends BaseExpandableListAdapter {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                series.setCurrent_episodio(episodio);
                 DataSerie dataSerie = new DataSerie(series, (Activity) context);
                 Filmes.openVideo(episodio.getUrl(), dataSerie.getVisualized(groupPosition, childPosition), series.getName() + "_" + groupPosition + "-" + childPosition, null, null, series);
             }

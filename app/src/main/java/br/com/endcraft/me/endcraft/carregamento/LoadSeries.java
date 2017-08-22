@@ -62,6 +62,7 @@ public class LoadSeries extends AsyncTask<String, Void, List<Series>> {
                         ep.put(s.getInt("temporada"), episodios = new ArrayList<>());
                     }
                     String link = s.getString("link");
+                    String subtitle_url = s.has("subtitle") ? s.getString("subtitle").trim() : "";
 
                     if(link.contains(";")){
                         link = link.split(";")[0];
@@ -71,6 +72,7 @@ public class LoadSeries extends AsyncTask<String, Void, List<Series>> {
                         link = OVH_URL + link;
                     }
                     Series.Episodio e = new Series.Episodio(s.getString("nome"), s.getInt("episodio"), link);
+                    e.setSubtitleUrl(subtitle_url);
                     Collections.sort(episodios, new Comparator<Series.Episodio>() {
                         @Override
                         public int compare(Series.Episodio o1, Series.Episodio o2) {

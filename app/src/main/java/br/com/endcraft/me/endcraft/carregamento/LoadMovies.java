@@ -18,7 +18,6 @@ import br.com.endcraft.me.endcraft.Categoria;
 import br.com.endcraft.me.endcraft.Filmes;
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
 import br.com.endcraft.me.endcraft.Movie;
-import br.com.endcraft.me.endcraft.R;
 
 /**
  * Created by JonasXPX on 18.jul.2017.
@@ -76,7 +75,7 @@ public class LoadMovies extends AsyncTask<String, Void, List<Movie>> {
 
                 m.setIdioma( idioma.has("0") ?  idioma.getString("0") : "Português" );
                 m.setLink(data.getJSONObject("url").getString("0"));
-                m.setSubtitleLink(data.get("subtitles") instanceof JSONObject ? data.getJSONObject("subtitles").getString("0") : "");
+                m.setSubtitleLink(data.get("subtitles") instanceof JSONObject ? (data.getJSONObject("subtitles").has("0") ? data.getJSONObject("subtitles").getString("0") : "") : "");
                 List<Categoria> categorias = new ArrayList<>();
                 JSONArray array = data.getJSONArray("categoria");
                 for(int e=0; e<array.length();e++){

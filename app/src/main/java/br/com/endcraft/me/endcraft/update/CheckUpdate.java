@@ -17,7 +17,6 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import br.com.endcraft.me.endcraft.R;
-import br.com.endcraft.me.endcraft.update.Update;
 
 /**
  * Created by JonasXPX on 20.jul.2017.

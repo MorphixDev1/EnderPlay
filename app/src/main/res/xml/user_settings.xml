@@ -22,7 +22,7 @@
             android:key="subtitle_font_size"
             android:title="Tamanho da fonte"
             android:summary="@string/desc_font_size"
-            android:defaultValue="12"
+            android:defaultValue="20"
             android:entries="@array/font_size"
             android:entryValues="@array/font_size_value"/>
     </PreferenceCategory>

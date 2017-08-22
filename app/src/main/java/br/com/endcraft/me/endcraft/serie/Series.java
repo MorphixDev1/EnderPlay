@@ -11,6 +11,7 @@ import java.util.TreeMap;
 public class Series implements Serializable{
 
     private String name;
+    private Series.Episodio current_episodio = null;
     private TreeMap<Integer, List<Episodio>> temporadas = new TreeMap<>();
     private String urlImg;
 
@@ -42,15 +43,32 @@ public class Series implements Serializable{
         this.temporadas = serie;
     }
 
+    public Episodio getCurrent_episodio() {
+        return current_episodio;
+    }
+
+    public void setCurrent_episodio(Episodio current_episodio) {
+        this.current_episodio = current_episodio;
+    }
+
     public static final class Episodio implements Serializable{
         private String name;
         private int epNumber;
         private String url;
+        private String subtitleUrl;
 
         public Episodio(String name, int epNumber, String url) {
             this.name = name;
             this.epNumber = epNumber;
             this.url = url;
+        }
+
+        public String getSubtitleUrl() {
+            return subtitleUrl;
+        }
+
+        public void setSubtitleUrl(String subtitleUrl) {
+            this.subtitleUrl = subtitleUrl;
         }
 
         public String getName() {

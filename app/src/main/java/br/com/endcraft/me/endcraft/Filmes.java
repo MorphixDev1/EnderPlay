@@ -30,6 +30,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -67,6 +68,7 @@ public class Filmes extends AppCompatActivity {
     public static RelativeLayout loading;
     private DrawerBuilder drawer;
     private static RewardedVideoAd ad;
+    private static FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +86,14 @@ public class Filmes extends AppCompatActivity {
 
         createDrawer();
 
+        //Firebase ADs
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.ad_unit_id));
-        mInterstitialAd.setImmersiveMode(true);
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        //Firebase Analytics
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         list = (GridView) findViewById(R.id.itens);
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -168,6 +174,11 @@ public class Filmes extends AppCompatActivity {
     public static void openVideo(String url, final long seek, final String name, Activity activity1, @Nullable final Movie movie, @Nullable final Series series){
         if(activity1 == null)
             activity1 = instance;
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "play");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         final Activity activity = activity1;
         url_final = url;
         if(mInterstitialAd.isLoaded()){
