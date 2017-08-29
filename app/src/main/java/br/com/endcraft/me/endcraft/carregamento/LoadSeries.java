@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import br.com.endcraft.me.endcraft.Filmes;
+import br.com.endcraft.me.endcraft.TypeContent;
 import br.com.endcraft.me.endcraft.serie.AdapterCustomSeries;
 import br.com.endcraft.me.endcraft.serie.Series;
 
@@ -96,6 +97,7 @@ public class LoadSeries extends AsyncTask<String, Void, List<Series>> {
         Log.d(DEBUG, "SIZE: " + series.size());
         AdapterCustomSeries ad = new AdapterCustomSeries(series, this.activity);
         this.gv.setAdapter(ad);
-        Filmes.loading.setVisibility(View.GONE);
+        Filmes.current_content = TypeContent.SERIE;
+        Filmes.instance.refreshLayout.setRefreshing(false);
     }
 }

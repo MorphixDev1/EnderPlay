@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -17,13 +19,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
@@ -31,15 +31,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -65,10 +57,12 @@ public class Filmes extends AppCompatActivity {
     private static InterstitialAd mInterstitialAd;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
-    public static RelativeLayout loading;
     private DrawerBuilder drawer;
     private static RewardedVideoAd ad;
     private static FirebaseAnalytics mFirebaseAnalytics;
+    public static TypeContent current_content;
+    private DrawerLayout main_drawer;
+    public SwipeRefreshLayout refreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,13 +72,11 @@ public class Filmes extends AppCompatActivity {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
-        setContentView(R.layout.filmes_main);
+        setContentView(R.layout.drawer);
         instance = this;
-        loading = (RelativeLayout) findViewById(R.id.loading_icon);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.actionbar);
+        setSupportActionBar(toolbar);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.actionbar));
-
-        createDrawer();
 
         //Firebase ADs
         mInterstitialAd = new InterstitialAd(this);
@@ -101,6 +93,24 @@ public class Filmes extends AppCompatActivity {
         loadMovies();
         new CheckUpdate(this).execute(BuildConfig.VERSION_NAME);
 
+        main_drawer = (DrawerLayout) findViewById(R.id.main_drawer);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navegacao);
+        navigationView.setNavigationItemSelectedListener(new ItemClickListener(main_drawer));
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, main_drawer, toolbar, R.string.accept, R.string.accept);
+        main_drawer.setDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_swipe);
+        refreshLayout.setRefreshing(true);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(current_content == TypeContent.SERIE)
+                    loadSeries();
+                else if (current_content == TypeContent.MOVIE)
+                    loadMovies();
+            }
+        });
 
     }
 
@@ -108,60 +118,12 @@ public class Filmes extends AppCompatActivity {
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
-    private void loadMovies(){
-        loading.setVisibility(View.VISIBLE);
+    protected void loadMovies(){
         new LoadMovies(this, list).execute(getString(R.string.movie_link));
     }
 
-    private void loadSeries(){
-        loading.setVisibility(View.VISIBLE);
+    protected void loadSeries(){
         new LoadSeries(this, list).execute(getString(R.string.series_link));
-    }
-
-    private void createDrawer() {
-        drawer = new DrawerBuilder().withActivity(this).withToolbar((Toolbar) findViewById(R.id.actionbar));
-        SectionDrawerItem sesion = new SectionDrawerItem().withName("Categorias").withTextColor(Color.GRAY);
-        drawer.addDrawerItems(new DividerDrawerItem());
-        drawer.addDrawerItems(new PrimaryDrawerItem().withIdentifier(1)
-                .withName("Filmes")
-                .withIcon(FontAwesome.Icon.faw_film)
-                .withTextColor(Color.WHITE)
-                .withSelectedColor(getResources().getColor(R.color.selected_color))
-                .withSelectedTextColor(Color.WHITE));
-        drawer.addDrawerItems(new SecondaryDrawerItem().withIdentifier(2).withName("Séries").withIcon(FontAwesome.Icon.faw_film)
-                .withTextColor(Color.WHITE)
-                .withSelectedColor(getResources().getColor(R.color.selected_color))
-                .withSelectedTextColor(Color.WHITE));
-        drawer.addDrawerItems(sesion);
-        for(Categoria categoria : Categoria.values()){
-            drawer.addDrawerItems(new SecondaryDrawerItem().withIdentifier(categoria.id).withName(categoria.getNome())
-                    .withTextColor(Color.WHITE)
-                    .withSelectedColor(getResources().getColor(R.color.selected_color))
-                    .withSelectedTextColor(Color.WHITE));
-        }
-
-        drawer.withSliderBackgroundColor(Color.rgb(75,75,75));
-        drawer.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-            @Override
-            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                Log.d("DEGUB", "CLICKED: " + position);
-                switch (position){
-                    case 1:
-                        loadMovies();
-                        return false;
-                    case 2:
-                        loadSeries();
-                        return false;
-                   /* case 3:
-                        loadOnlineTv();
-                        return false;*/
-                }
-                groupId255(Categoria.byName(((Nameable)drawerItem).getName().getText()));
-                return false;
-            }
-        });
-
-        Drawer d = drawer.build();
     }
 
     public static void openDesc(long seek, Movie movie){
@@ -267,9 +229,6 @@ public class Filmes extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getGroupId()){
-            case 255:
-               // groupId255(item);
-                break;
             case 100:
                 groupId100(item);
                 break;
@@ -296,7 +255,7 @@ public class Filmes extends AppCompatActivity {
         return false;
     }
 
-    private boolean groupId255(Categoria item){
+    protected boolean groupId255(Categoria item){
         if(item == null)
             return true;
         Toast.makeText(this, item.getNome(), Toast.LENGTH_SHORT).show();

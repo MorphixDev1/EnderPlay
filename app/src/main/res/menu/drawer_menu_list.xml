@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+        <item
+            android:id="@+id/item_filme"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/filmes"/>
+        <item
+            android:id="@+id/item_serie"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/series"/>
+    </group>
+    <item android:title="Categorias" android:id="@+id/item_cat">
+        <menu>
+            <item
+                android:title="Ação"/>
+            <item
+                android:title="Aventura"/>
+            <item
+                android:title="Animação"/>
+            <item
+                android:title="Comédia"/>
+            <item
+                android:title="Drama"/>
+            <item
+                android:title="Documentário"/>
+            <item
+                android:title="Ficção"/>
+            <item
+                android:title="Fantasia"/>
+            <item
+                android:title="Guerra"/>
+            <item
+                android:title="Inglês"/>
+            <item
+                android:title="Suspense"/>
+            <item
+                android:title="Terror"/>
+        </menu>
+    </item>
+</menu>

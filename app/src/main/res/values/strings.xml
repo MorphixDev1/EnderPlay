@@ -42,4 +42,16 @@
     <string name="tv_link">https://ender.tk/filme/data.php?getonlinetv=1</string>
     <string name="series_link">https://ender.tk/filme/data.php?getseries=1</string>
     <string name="ad_unit_id">ca-app-pub-6681846718813637/7457083506</string>
+    <string name="media_route_menu_title">Play on&#8230;</string>
+    <string name="ok">okay</string>
+    <string name="error">Erro!</string>
+    <string name="oops">Oops</string>
+    <string name="queue_item_added_to_play_next">queue_item_added_to_play_next</string>
+    <string name="queue_item_added_to_queue">queue_item_added_to_queue</string>
+    <string name="video_error_media_load_timeout">video_error_media_load_timeout</string>
+    <string name="video_error_server_unaccessible">video_error_server_unaccessible</string>
+    <string name="video_error_unknown_error">video_error_unknown_error</string>
+    <string name="vp_desc">description</string>
+    <string name="transition_image">transition_image</string>
+    <string name="filmes">Filmes</string>
 </resources>

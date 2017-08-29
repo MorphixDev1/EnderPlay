@@ -18,6 +18,7 @@ import br.com.endcraft.me.endcraft.Categoria;
 import br.com.endcraft.me.endcraft.Filmes;
 import br.com.endcraft.me.endcraft.Managers.AdapterCustomFilmes;
 import br.com.endcraft.me.endcraft.Movie;
+import br.com.endcraft.me.endcraft.TypeContent;
 
 /**
  * Created by JonasXPX on 18.jul.2017.
@@ -98,6 +99,7 @@ public class LoadMovies extends AsyncTask<String, Void, List<Movie>> {
     protected void onPostExecute(List<Movie> movies) {
         AdapterCustomFilmes adapterCustomFilmes = new AdapterCustomFilmes(movies, activity);
         view.setAdapter(adapterCustomFilmes);
-        Filmes.loading.setVisibility(View.GONE);
+        Filmes.instance.refreshLayout.setRefreshing(false);
+        Filmes.current_content = TypeContent.MOVIE;
     }
 }

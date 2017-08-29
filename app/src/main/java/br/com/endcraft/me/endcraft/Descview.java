@@ -58,6 +58,7 @@ public class Descview extends AppCompatActivity {
         TextView desc = (TextView) findViewById(R.id.descricao);
         TextView idioma = (TextView) findViewById(R.id.idioma);
         TextView nome = (TextView) findViewById(R.id.movie_name);
+        TextView categorias = (TextView) findViewById(R.id.categorias);
         TextView releaceDate = (TextView) findViewById(R.id.releacedate);
         TextView diretor = (TextView) findViewById(R.id.diretor);
 
@@ -85,7 +86,16 @@ public class Descview extends AppCompatActivity {
         Categoria[] c = new Categoria[movie.getCategorias().size()];
         movie.getCategorias().toArray(c);
         gv.setAdapter(new AdapterCustomFilmes(Tools.filterByCat(Filmes.list.getAdapter(), movie, c), this));
-
+        StringBuilder cat = new StringBuilder();
+        int count = 0;
+        for(Categoria categoria : c){
+            count++;
+            cat.append(categoria.getNome());
+            if(c.length != count){
+                cat.append(", ");
+            }
+        }
+        categorias.setText(cat.toString());
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }

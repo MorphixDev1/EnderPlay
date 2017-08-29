@@ -38,6 +38,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.mikepenz:fontawesome-typeface:4.7.0.1@aar'
     compile 'com.rarepebble:colorpicker:2.2.0'
+   // compile 'su.litvak.chromecast:api-v2:0.10.1'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'
