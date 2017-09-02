@@ -30,7 +30,6 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
 import java.util.ArrayList;
@@ -59,10 +58,10 @@ public class Filmes extends AppCompatActivity {
     private ListView drawerList;
     private DrawerBuilder drawer;
     private static RewardedVideoAd ad;
-    private static FirebaseAnalytics mFirebaseAnalytics;
     public static TypeContent current_content;
     private DrawerLayout main_drawer;
     public SwipeRefreshLayout refreshLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +81,7 @@ public class Filmes extends AppCompatActivity {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.ad_unit_id));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
-        //Firebase Analytics
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mInterstitialAd.setImmersiveMode(true);
 
         list = (GridView) findViewById(R.id.itens);
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -96,10 +93,9 @@ public class Filmes extends AppCompatActivity {
         main_drawer = (DrawerLayout) findViewById(R.id.main_drawer);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navegacao);
         navigationView.setNavigationItemSelectedListener(new ItemClickListener(main_drawer));
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, main_drawer, toolbar, R.string.accept, R.string.accept);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, main_drawer, toolbar, R.string.app_name, R.string.app_name);
         main_drawer.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_swipe);
         refreshLayout.setRefreshing(true);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -112,6 +108,12 @@ public class Filmes extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        actionBarDrawerToggle.syncState();
     }
 
     public static void reloadAd(){
@@ -137,14 +139,10 @@ public class Filmes extends AppCompatActivity {
         if(activity1 == null)
             activity1 = instance;
         Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "play");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
-        final Activity activity = activity1;
+       final Activity activity = activity1;
         url_final = url;
         if(mInterstitialAd.isLoaded()){
-            mInterstitialAd.show();
+             mInterstitialAd.show();
             mInterstitialAd.setAdListener(new AdListener(){
                 @Override
                 public void onAdClosed() {

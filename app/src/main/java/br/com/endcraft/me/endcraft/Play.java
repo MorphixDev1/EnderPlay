@@ -3,6 +3,7 @@ package br.com.endcraft.me.endcraft;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,6 +53,8 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
 import com.mikepenz.iconics.context.IconicsContextWrapper;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 
 import br.com.endcraft.me.endcraft.Managers.DataMovie;
@@ -86,6 +89,9 @@ public class Play extends AppCompatActivity {
     private Dialog dialog_audio_track;
     private SubtitleView subtitleView;
     private TextView subtitles_icon;
+    private TextView lock;
+    private View progress_bar;
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(IconicsContextWrapper.wrap(newBase));
@@ -104,6 +110,7 @@ public class Play extends AppCompatActivity {
         movie_title = (TextView) findViewById(R.id.movie_title);
         subtitles_icon = (TextView) findViewById(R.id.subtitles);
         audio_track_selection = (TextView) findViewById(R.id.audio_track_selection);
+        progress_bar = findViewById(R.id.exo_progress);
         audio_track_selection.setVisibility(View.GONE);
         instance = this;
         audio_track_selection.setOnClickListener(new View.OnClickListener() {
@@ -286,6 +293,7 @@ public class Play extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        save();
         player.setPlayWhenReady(false);
         Log.d(DEBUG, "Player called onStop()");
     }
@@ -300,6 +308,11 @@ public class Play extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        save();
+        player.release();
+    }
+
+    private void save(){
         DataMovie dataMovie = new DataMovie(movie, instance);
         dataMovie.saveSeek(player.getCurrentPosition() > 5000 ? player.getCurrentPosition() -5000: player.getCurrentPosition());
         if(seriesdata != null) {
@@ -309,7 +322,6 @@ public class Play extends AppCompatActivity {
         }
         Log.d(DEBUG, "Destruido: " + player.getCurrentPosition());
         Filmes.reloadAd();
-        player.release();
     }
 
     @Override

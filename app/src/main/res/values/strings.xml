@@ -54,4 +54,5 @@
     <string name="vp_desc">description</string>
     <string name="transition_image">transition_image</string>
     <string name="filmes">Filmes</string>
+    <string name="version">Versão: 1.6.1</string>
 </resources>
