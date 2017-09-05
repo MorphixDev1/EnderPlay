@@ -91,7 +91,7 @@ public class AdapterExpandSeries extends BaseExpandableListAdapter {
         TextView textView = (TextView) view.findViewById(R.id.episodio);
 
         long dataView = dataSerie.getVisualized(groupPosition, childPosition);
-        textView.setText(childPosition + " - " + episodio.getName() + (dataView != 0 ? " \u25CF" : ""));
+        textView.setText(childPosition+1 + " - " + episodio.getName() + (dataView != 0 ? " \u25CF" : ""));
 
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
