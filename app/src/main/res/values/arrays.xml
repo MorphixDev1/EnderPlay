@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="font_size">
+    <string-array name="font_size" translatable="false">
         <item name="7">7</item>
         <item name="8">8</item>
         <item name="9">9</item>
@@ -19,7 +19,7 @@
         <item name="22">22</item>
         <item name="23">23</item>
     </string-array>
-    <string-array name="font_size_value">
+    <string-array name="font_size_value" translatable="false">
         <item name="7">7</item>
         <item name="8">8</item>
         <item name="9">9</item>

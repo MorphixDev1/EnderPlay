@@ -1,10 +1,12 @@
 package br.com.endcraft.me.endcraft;
 
+import android.app.AlertDialog;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /**
  * Created by JonasXPX on 29.ago.2017.
@@ -29,6 +31,14 @@ public class ItemClickListener implements NavigationView.OnNavigationItemSelecte
             case R.id.item_serie:
                 Filmes.instance.refreshLayout.setRefreshing(true);
                 Filmes.instance.loadSeries();
+                drawerLayout.closeDrawer(GravityCompat.START);
+                break;
+            case R.id.pedido:
+                Pedido pedido = new Pedido();
+                AlertDialog dialog = pedido.createDialog(Filmes.instance);
+                dialog.show();
+                pedido.init(dialog);
+
                 drawerLayout.closeDrawer(GravityCompat.START);
                 break;
             default:

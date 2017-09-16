@@ -38,4 +38,10 @@
                 android:title="Terror"/>
         </menu>
     </item>
+    <item android:title="EnderPlay" android:id="@+id/item_menu">
+        <menu>
+            <item android:title="Fazer pedido" android:id="@+id/pedido"></item>
+            <item android:title="Sobre"></item>
+        </menu>
+    </item>
 </menu>

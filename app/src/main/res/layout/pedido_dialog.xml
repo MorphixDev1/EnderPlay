@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:gravity="center|top"
+        android:text="@string/fa_a_um_pedido"
+        android:textSize="21sp" />
+    <EditText
+        android:id="@+id/pedido_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="@string/nome_do_filme_ou_s_rie"
+        android:layout_marginBottom="3dp"/>
+    <EditText
+        android:id="@+id/pedido_ref"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="@string/refer_ncia_opcional"
+        android:layout_marginBottom="3dp"/>
+    <EditText
+        android:id="@+id/pedido_mail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="@string/seu_e_mail_opcional"
+        android:layout_marginBottom="3dp"/>
+    <EditText
+        android:id="@+id/pedido_obs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textLongMessage"
+        android:hint="@string/observa_es_opcional"
+        android:layout_marginBottom="3dp"/>
+</LinearLayout>

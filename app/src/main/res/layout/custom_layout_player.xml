@@ -33,7 +33,7 @@
             android:textColor="@color/white"
             android:padding="5dp"
             android:gravity="left|center"
-            android:textSize="21sp"
+            android:textSize="24sp"
             android:layout_marginLeft="10dp"
             android:layout_width="30dp"
             android:layout_height="30dp" />
@@ -51,7 +51,7 @@
 
         <TextView
             android:id="@+id/subtitles"
-            android:text="{faw-cc}"
+            android:text="{faw-comment}"
             android:textColor="@color/white"
             android:padding="5dp"
             android:gravity="left|center"

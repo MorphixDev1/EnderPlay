@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,6 +56,7 @@ import com.mikepenz.iconics.context.IconicsContextWrapper;
 
 import org.w3c.dom.Text;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import br.com.endcraft.me.endcraft.Managers.DataMovie;
@@ -90,6 +92,7 @@ public class Play extends AppCompatActivity {
     private SubtitleView subtitleView;
     private TextView subtitles_icon;
     private TextView lock;
+    private boolean in_progress = false;
     private View progress_bar;
 
     @Override
@@ -142,8 +145,12 @@ public class Play extends AppCompatActivity {
                         View view = instance.getLayoutInflater().inflate(R.layout.audio_track_selection_itens, parent, false);
                         final String name = (String) getItem(position);
                         final TextView trackName = (TextView) view.findViewById(R.id.track_name);
+                        if(trackSelector.getParameters().preferredAudioLanguage != null && trackSelector.getParameters().preferredAudioLanguage.equalsIgnoreCase(name))
+                            trackName.setTextColor(Color.BLACK);
+                        else
+                            trackName.setTextColor(Color.DKGRAY);
                         trackName.setEnabled(!audioTracks.get(name));
-                        trackName.setText(name);
+                        trackName.setText(Language.getNameByTag(name));
                         trackName.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -161,6 +168,7 @@ public class Play extends AppCompatActivity {
                 dialog_audio_track = builder.create();
 
                 dialog_audio_track.show();
+
             }
         });
 
@@ -250,12 +258,16 @@ public class Play extends AppCompatActivity {
 
                 @Override
                 public void onLoadingChanged(boolean isLoading) {
-                    Log.v(DEBUG,"Listener-onLoadingChanged... " + isLoading);
+                    Log.i(DEBUG,"Listener-onLoadingChanged... " + isLoading);
                 }
 
                 @Override
                 public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                    Log.v(DEBUG,"Listener-onPlayerStateChanged...");
+                    Log.i(DEBUG,"Listener-onPlayerStateChanged... state: " + playbackState + " - " + playWhenReady);
+                    if(!playWhenReady)
+                        movie_title.setVisibility(View.VISIBLE);
+                    else
+                        movie_title.setVisibility(View.INVISIBLE);
                 }
 
                 @Override
@@ -265,7 +277,7 @@ public class Play extends AppCompatActivity {
                             instance.finish();
                         return;
                     }
-                    Log.v(DEBUG,"Listener-onPlayerError..." + error.getMessage());
+                    Log.i(DEBUG,"Listener-onPlayerError..." + error.getMessage());
                     player.stop();
                     player.prepare(loopingSource);
                     player.setPlayWhenReady(true);
@@ -339,6 +351,10 @@ public class Play extends AppCompatActivity {
     }
 
     private void hiddleTitle(){
+        if(in_progress){
+            return;
+        }
+        in_progress = true;
         movie_title.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -346,6 +362,7 @@ public class Play extends AppCompatActivity {
                     return;
                 }
                 movie_title.setVisibility(View.INVISIBLE);
+                in_progress = false;
             }
         }, 5000);
     }
@@ -363,6 +380,32 @@ public class Play extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private enum Language{
+        INGLÊS(new String[]{"eng"}, "Inglês"),
+        PORTUGUÊS(new String[]{"por"}, "Português"),
+        ALEMÃO(new String[]{"ger", "deu"}, "Alemão"),
+        FRANÇES(new String[]{"fre", "fra"}, "Françes"),
+        RUSSO(new String[]{"rus", "rus"}, "Russo");
+
+        private String name;
+        private String[] sub;
+
+        Language(String[] sub, String name){
+            this.name = name;
+            this.sub = sub;
+        }
+
+        public static String getNameByTag(String tag){
+            for(Language l : Language.values()){
+                if(Arrays.asList(l.sub).contains(tag)){
+                    return l.name;
+                }
+            }
+            return tag;
+        }
+
     }
 
 }
