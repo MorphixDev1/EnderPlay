@@ -17,7 +17,6 @@ public class QualitySelect extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.select_quality_dialog, container);
-        return view;
+        return inflater.inflate(R.layout.select_quality_dialog, container, false);
     }
 }

@@ -54,7 +54,7 @@
     <string name="vp_desc" translatable="false">description</string>
     <string name="transition_image" translatable="false">transition_image</string>
     <string name="filmes">Filmes</string>
-    <string name="version">Versão: 1.6.3</string>
+    <string name="version">Versão: 1.6.4</string>
     <string name="pedido_enviar">Enviar</string>
     <string name="observa_es_opcional">Observações (Opcional)</string>
     <string name="seu_e_mail_opcional">Seu e-mail (Opcional)</string>

@@ -133,7 +133,7 @@ public class Descview extends AppCompatActivity {
                             q.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Filmes.openVideo((String)getItem(position), seek, movie.getNome(), activity, movie, null);
+                                    Filmes.preOpenVideo((String)getItem(position), seek, movie.getNome(), activity, movie, null);
                                 }
                             });
                             return view;
@@ -141,7 +141,7 @@ public class Descview extends AppCompatActivity {
                     });
                     selectQuality.show();
                 } else
-                    Filmes.openVideo(movie.getLink(), seek, movie.getNome(), activity, movie, null);
+                    Filmes.preOpenVideo(movie.getLink(), seek, movie.getNome(), activity, movie, null);
             }
         };
     }

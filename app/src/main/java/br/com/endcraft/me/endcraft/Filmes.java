@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
@@ -62,6 +63,7 @@ public class Filmes extends AppCompatActivity {
     public static TypeContent current_content;
     private DrawerLayout main_drawer;
     public SwipeRefreshLayout refreshLayout;
+    private static RewardedVideoAd mRewardedVideoAd;
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
@@ -83,6 +85,10 @@ public class Filmes extends AppCompatActivity {
         mInterstitialAd.setAdUnitId(getString(R.string.ad_unit_id));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         mInterstitialAd.setImmersiveMode(true);
+
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        loadRewardedVideoAd();
+
 
         list = (GridView) findViewById(R.id.itens);
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -136,14 +142,24 @@ public class Filmes extends AppCompatActivity {
         instance.startActivity(descView);
     }
 
+    public static void preOpenVideo(String url, long seek, String name, Activity activity1, Movie movie, Series series){
+        mRewardedVideoAd.setRewardedVideoAdListener(new VideoPremiado(url, seek, name, activity1, movie, series));
+        if(mRewardedVideoAd.isLoaded()){
+            mRewardedVideoAd.show();
+        } else {
+            openVideo(url, seek, name, activity1, movie, series);
+        }
+
+    }
+
     public static void openVideo(String url, final long seek, final String name, Activity activity1, @Nullable final Movie movie, @Nullable final Series series){
         if(activity1 == null)
             activity1 = instance;
         Bundle bundle = new Bundle();
-       final Activity activity = activity1;
+        final Activity activity = activity1;
         url_final = url;
         if(mInterstitialAd.isLoaded()){
-             mInterstitialAd.show();
+            mInterstitialAd.show();
             mInterstitialAd.setAdListener(new AdListener(){
                 @Override
                 public void onAdClosed() {
@@ -271,5 +287,10 @@ public class Filmes extends AppCompatActivity {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static void loadRewardedVideoAd(){
+        mRewardedVideoAd.loadAd("ca-app-pub-6681846718813637/2042677168",
+                new AdRequest.Builder().build());
     }
 }

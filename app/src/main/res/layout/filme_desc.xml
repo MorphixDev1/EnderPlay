@@ -17,8 +17,8 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="top|center"
-        android:layout_marginTop="50dp"
-        android:background="@drawable/play_buttom"
+        android:layout_marginTop="55dp"
+        android:background="@drawable/exo_controls_play"
         android:alpha="0.7"
         />
     <View
